@@ -1,0 +1,15 @@
+<div class="wrapper">
+
+  {% if loading %}
+
+    <span class="small dimmed">{{ phrases.loading | safe }}</span>
+
+  {% else %}
+
+    <div class="current-conditions-wrapper">
+      <span class="current-temperature">{{ currently.temperature }}°</span>
+    </div>
+
+  {% endif %}
+
+</div>
