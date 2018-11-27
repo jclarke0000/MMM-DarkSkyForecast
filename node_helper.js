@@ -15,6 +15,8 @@ module.exports = NodeHelper.create({
 
       if (payload.apikey == null || payload.apikey == "") {
         console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** No API key configured. Get an API key at https://darksky.net" );
+      } else if (payload.latitude == null || payload.latitude == "" || payload.longitude == null || payload.longitude == "") {
+        console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** Latitude and/or longitude not provided." );
       } else {
 
         //make request to Dark Sky API

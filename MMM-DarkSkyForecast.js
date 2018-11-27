@@ -2,8 +2,8 @@ Module.register("MMM-DarkSkyForecast", {
 
   defaults: {
     apikey: "",
-    latitude: "51.490230",
-    longitude: "-0.258810",
+    latitude: "",
+    longitude: "",
     updateInterval: 10 * 60 * 1000, //5 minutes
     units: "ca",
     showCurrentConditions: true,
@@ -22,7 +22,7 @@ Module.register("MMM-DarkSkyForecast", {
     useAnimatedIcons: true,
     animatedMainIconOnly: true,
     colored: true,
-    layout: "tiled",
+    forecastLayout: "tiled",
     showInlineIcons: true,
     mainIconSize: 100,
     forecastIconSize: 70,
@@ -103,6 +103,10 @@ Module.register("MMM-DarkSkyForecast", {
       //render weather data
       this.weatherData = payload;
       this.loading = false;
+
+      if (this.config.useAnimatedIcons) {
+        this.clearIcons();
+      }
       this.updateDom(this.config.updateFadeSpeed);
 
       //start icon playback
@@ -119,7 +123,7 @@ Module.register("MMM-DarkSkyForecast", {
   getDom: function() {
 
     var wrapper = document.createElement("div");
-    wrapper.className = "wrapper " + this.config.layout + 
+    wrapper.className = "wrapper " + this.config.forecastLayout + 
       " icon-set-" + this.config.iconset +
       (this.config.colored ? " colored" : "") +
       (this.config.showInlineIcons ? " inline-icons" : "");
@@ -132,9 +136,9 @@ Module.register("MMM-DarkSkyForecast", {
       return wrapper;
     }
 
-    if (this.config.useAnimatedIcons) {
-      this.clearIcons();
-    }
+    // if (this.config.useAnimatedIcons) {
+    //   this.clearIcons();
+    // }
 
     //current conditions
     if (this.config.showCurrentConditions) {
@@ -281,11 +285,54 @@ Module.register("MMM-DarkSkyForecast", {
 
     }
 
+    var forecastWrapper;
+    if (this.config.showHourlyForecast || this.config.showDailyForecast) {
+      forecastWrapper = document.createElement("div");
+      forecastWrapper.className = "forecast-container";
+
+      if (this.config.forecastLayout == "table") {
+        var headerRow = document.createElement("div");
+        headerRow.className = "header-row";
+
+        var hTime = document.createElement("span");
+        hTime.className = "date-time-header";
+        hTime.innerHTML = "&nbsp;";
+        headerRow.appendChild(hTime);
+
+        var hIcon = document.createElement("span");
+        hIcon.innerHTML = "&nbsp;";
+        headerRow.appendChild(hIcon);
+
+        var htemp = document.createElement("span");
+        htemp.innerHTML = "&nbsp;";
+        headerRow.appendChild(htemp);
+
+        if (this.config.showPrecipitation) {
+          var hPrecip = document.createElement("span");
+          var hdrRainIcon = document.createElement("img");
+          hdrRainIcon.className = "icon inline rain";
+          hdrRainIcon.src = this.generateIconSrc("i-rain");
+          hPrecip.appendChild(hdrRainIcon);          
+          headerRow.appendChild(hPrecip);
+        }
+
+        if (this.config.showWind) {
+          var hdrWind = document.createElement("span");
+          var hdrWindIcon = document.createElement("img");
+          hdrWindIcon.className = "icon inline wind";
+          hdrWindIcon.src = this.generateIconSrc("i-wind");
+          hdrWind.appendChild(hdrWindIcon);          
+          headerRow.appendChild(hdrWind);
+        }
+
+        forecastWrapper.appendChild(headerRow);
+      } 
+
+
+    }
+
     //hourly forecast
     if (this.config.showHourlyForecast) {
-
-      var hourlyWrapper = document.createElement("div");
-      hourlyWrapper.className = "hourly forecast-container";
 
       var displayCounter = 0;
       var currentIndex = this.config.hourlyForecastInterval;
@@ -313,7 +360,12 @@ Module.register("MMM-DarkSkyForecast", {
           hItemIcon.src = this.generateIconSrc(h.icon);
         }    
         hItemIcon.className = "hourly icon forecast";
-        hItem.appendChild(hItemIcon);
+
+        var hItemIconContainer = document.createElement("span");
+        hItemIconContainer.className = "forecast-icon-container";
+        hItemIconContainer.appendChild(hItemIcon);
+        hItem.appendChild(hItemIconContainer);
+
 
         //temperature
         var hItemTemp = document.createElement("span");
@@ -328,9 +380,9 @@ Module.register("MMM-DarkSkyForecast", {
           precipitationContainer.className = "hourly precipitation-container small";
 
           //inline icon
-          if (this.config.showInlineIcons) {
+          if (this.config.showInlineIcons && this.config.layout == "tiled") {
             var hUmbrellaIcon = document.createElement("img");
-            hUmbrellaIcon.className = "icon inline umbrella";
+            hUmbrellaIcon.className = "icon inline rain";
             hUmbrellaIcon.src = this.generateIconSrc("i-rain");
             precipitationContainer.appendChild(hUmbrellaIcon);          
           } 
@@ -358,7 +410,7 @@ Module.register("MMM-DarkSkyForecast", {
           windContainer.className = "hourly wind-container small";
 
           //inline icon
-          if (this.config.showInlineIcons) {
+          if (this.config.showInlineIcons && this.config.layout == "tiled") {
             var hWindIcon = document.createElement("img");
             hWindIcon.className = "icon inline wind-icon";
             hWindIcon.src = this.generateIconSrc("i-wind");
@@ -383,20 +435,17 @@ Module.register("MMM-DarkSkyForecast", {
         }
 
 
-        hourlyWrapper.appendChild(hItem);
+        forecastWrapper.appendChild(hItem);
 
         currentIndex += this.config.hourlyForecastInterval;
         displayCounter++;
 
       }
 
-      wrapper.append(hourlyWrapper);
     }
 
     //daily forecast
     if (this.config.showDailyForecast) {
-      var dailylyWrapper = document.createElement("div");
-      dailylyWrapper.className = "daily forecast-container";
 
       for (var i = 1; i <= this.config.maxDailiesToShow; i++) {
         if (this.weatherData.daily.data[i] == null) {
@@ -422,7 +471,11 @@ Module.register("MMM-DarkSkyForecast", {
           dItemIcon.src = this.generateIconSrc(d.icon);
         }    
         dItemIcon.className = "daily icon forecast";
-        dItem.appendChild(dItemIcon);
+
+        var dItemIconContainer = document.createElement("span");
+        dItemIconContainer.className = "forecast-icon-container";
+        dItemIconContainer.appendChild(dItemIcon);
+        dItem.appendChild(dItemIconContainer);
 
         //temperature
         var dTempContainer = document.createElement("span");
@@ -454,9 +507,9 @@ Module.register("MMM-DarkSkyForecast", {
           dPrecipContainer.className = "daily precipitation-container small";
 
           //inline icon
-          if (this.config.showInlineIcons) {
+          if (this.config.showInlineIcons && this.config.layout == "tiled") {
             var dUmbrellaIcon = document.createElement("img");
-            dUmbrellaIcon.className = "icon inline umbrella";
+            dUmbrellaIcon.className = "icon inline rain";
             dUmbrellaIcon.src = this.generateIconSrc("i-rain");
             dPrecipContainer.appendChild(dUmbrellaIcon);          
           } 
@@ -484,7 +537,7 @@ Module.register("MMM-DarkSkyForecast", {
           dWindContainer.className = "daily wind-container small";
 
           //inline icon
-          if (this.config.showInlineIcons) {
+          if (this.config.showInlineIcons && this.config.layout == "tiled") {
             var DWindIcon = document.createElement("img");
             DWindIcon.className = "icon inline wind-icon";
             DWindIcon.src = this.generateIconSrc("i-wind");
@@ -508,13 +561,15 @@ Module.register("MMM-DarkSkyForecast", {
           dItem.appendChild(dWindContainer);
         }
 
-        dailylyWrapper.appendChild(dItem);
+        forecastWrapper.appendChild(dItem);
 
       }
 
-      wrapper.appendChild(dailylyWrapper);
     }
 
+    if (this.config.showHourlyForecast || this.config.showDailyForecast) {
+      wrapper.appendChild(forecastWrapper);
+    }
 
     return wrapper;
 

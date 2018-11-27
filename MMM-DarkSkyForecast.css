@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+.MMM-DarkSkyForecast .forecast-container .forecast-item .temperature,
+.MMM-DarkSkyForecast .forecast-container .forecast-item .temperature-container {
+  color: #FFFFFF;
+}
+
 .MMM-DarkSkyForecast .temperature .low-temperature,
 .MMM-DarkSkyForecast .temperature-container .low-temperature {
   color: #AAA;
@@ -55,65 +60,6 @@
   position: relative;
 }
 
-/*.MMM-DarkSkyForecast .wrapper:not(.colored) .icon.inline {
-  opacity: 0.75;
-}
-
-.MMM-DarkSkyForecast .icon.inline.wind-icon {
-  width: 28px;
-  height: 28px;
-  margin-right: 0px;
-  bottom: -2px;
-}
-
-.MMM-DarkSkyForecast .wrapper.icon-set-3 .icon.inline,
-.MMM-DarkSkyForecast .wrapper.icon-set-4 .icon.inline {
-  width: 24px;
-  height: 24px;
-  margin-right: 1px;
-}
-
-.MMM-DarkSkyForecast .wrapper.icon-set-3 .icon.inline.umbrella,
-.MMM-DarkSkyForecast .wrapper.icon-set-4 .icon.inline.umbrella {
-  width: 24px;
-  height: 24px;
-  margin-right: -3px;
-}
-
-.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .icon.inline
- {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 3px;
-  vertical-align: bottom;
-  position: relative;
-  bottom: 2px;
-}
-
-.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .icon.inline.wind-icon
- {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  margin-right: 0px;
-  bottom: 0px;
-}
-
-.MMM-DarkSkyForecast .wrapper.tiled.icon-set-3 .forecast-container .forecast-item .icon.inline,
-.MMM-DarkSkyForecast .wrapper.tiled.icon-set-4 .forecast-container .forecast-item .icon.inline {
-  width: 24px;
-  height: 24px;
-  margin-right: 0px;  
-}
-
-.MMM-DarkSkyForecast .wrapper.tiled.icon-set-3 .forecast-container .forecast-item .icon.inlineumbrella,
-.MMM-DarkSkyForecast .wrapper.tiled.icon-set-4 .forecast-container .forecast-item .icon.inline.umbrella {
-  width: 24px;
-  height: 24px;
-  margin-right: -2px;  
-}*/
-
 
 /* Extra Current Conditions */
 
@@ -132,7 +78,9 @@
 }
 
 
-/* Forecast */
+/* ------------ Forecast ------------ */
+
+/* Tiled Layout */
 
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container {
   display: flex;
@@ -194,7 +142,6 @@
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .temperature,
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .temperature-container {
   font-size: 22px;
-  color: #FFF;
   padding: 4px 0;
 }
 
@@ -203,5 +150,55 @@
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .wind-container {
   font-size: 17px;
   line-height: 1.5;
+}
+
+/* ------------ Table Layout ------------ */
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container {
+  display: table;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item,
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row {
+  display: table-row;
+  border-bottom: solid 1px #222;  
+}
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row .date-time-header {
+  text-align: left;
+  overflow: visible;
+}
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item > span,
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row > span {
+  display: table-cell;
+  font-size: 17px;
+  text-align: center;
+  vertical-align: middle;
+  height: 40px;
+}
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row > span {
+  height: 30px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item > span:first-child {
+  text-align: left;
+}
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item > span:last-child {
+  text-align: right;
+}
+
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item .icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+  vertical-align: middle;
 }
 
