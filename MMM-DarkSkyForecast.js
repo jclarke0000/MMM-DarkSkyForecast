@@ -626,8 +626,9 @@ Module.register("MMM-DarkSkyForecast", {
 
   clearIcons: function() {
     this.skycons.pause();
+    var self = this;
     this.iconCache.forEach(function(icon) {
-      this.skycons.remove(icon.id);
+      self.skycons.remove(icon.id);
     });
     this.iconCache = [];
     this.iconIdCounter = 0;
