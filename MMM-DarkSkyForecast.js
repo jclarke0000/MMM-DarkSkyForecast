@@ -51,7 +51,6 @@ Module.register("MMM-DarkSkyForecast", {
 
     Log.info("Starting module: " + this.name);
 
-    this.loading = true;
     this.weatherData = null;
     this.iconCache = [];
     this.iconIdCounter = 0;
@@ -127,7 +126,6 @@ Module.register("MMM-DarkSkyForecast", {
 
       //render weather data
       this.weatherData = payload;
-      this.loading = false;
 
       if (this.config.useAnimatedIcons) {
         this.clearIcons();
@@ -155,7 +153,7 @@ Module.register("MMM-DarkSkyForecast", {
       (this.config.colored ? " colored" : "") +
       (this.config.showInlineIcons ? " inline-icons" : "");
     
-    if (this.loading) {
+    if (this.weatherData == null) {
       var loading = document.createElement("div");
       loading.innerHTML = this.translate("LOADING");
       loading.className = "dimmed light small";
@@ -307,7 +305,7 @@ Module.register("MMM-DarkSkyForecast", {
 
       summaryWrapper.appendChild(summary);
 
-      wrapper.append(summaryWrapper);
+      wrapper.appendChild(summaryWrapper);
 
 
     }
