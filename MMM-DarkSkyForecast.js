@@ -4,7 +4,7 @@ Module.register("MMM-DarkSkyForecast", {
     apikey: "",
     latitude: "",
     longitude: "",
-    updateInterval: 10 * 60 * 1000, //5 minutes
+    updateInterval: 10, // minutes
     units: "ca",
     showCurrentConditions: true,
     showExtraCurrentConditions: true,
@@ -20,7 +20,7 @@ Module.register("MMM-DarkSkyForecast", {
     language: config.language,
     iconset: "1c",
     useAnimatedIcons: true,
-    animatedMainIconOnly: true,
+    animateMainIconOnly: true,
     colored: true,
     forecastLayout: "tiled",
     showInlineIcons: true,
@@ -42,6 +42,9 @@ Module.register("MMM-DarkSkyForecast", {
   getStyles: function () {
     return ["MMM-DarkSkyForecast.css"];
   },
+
+  validUnits: ["ca","si","uk2","us"],
+  validLayouts: ["tiled", "table"],
 
   start: function() {
 
@@ -70,6 +73,18 @@ Module.register("MMM-DarkSkyForecast", {
     }
 
 
+
+    //sanitize optional parameters
+    if (this.validUnits.indexOf(this.config.units) == -1) {
+      this.config.units = "ca";
+    } 
+    if (this.validLayouts.indexOf(this.config.forecastLayout) == -1) {
+      this.config.units = "tiled";
+    } 
+    if (this.iconsets[this.config.iconset] == null) {
+      this.config.iconset = "1c";
+    } 
+
     //force icon set to mono version whern config.coloured = false
     if (this.config.colored == false) {
       this.config.iconset = this.config.iconset.replace("c","m");      
@@ -81,7 +96,7 @@ Module.register("MMM-DarkSkyForecast", {
 
     setInterval(function() {
       self.getData();
-    }, this.config.updateInterval);
+    }, this.config.updateInterval * 60 * 1000); //convert to milliseconds
 
   },
 
@@ -353,7 +368,7 @@ Module.register("MMM-DarkSkyForecast", {
 
         //icon
         var hItemIcon;
-        if (this.config.useAnimatedIcons && !this.config.animatedMainIconOnly) {
+        if (this.config.useAnimatedIcons && !this.config.animateMainIconOnly) {
           hItemIcon = this.addIcon(h.icon, this.config.forecastIconSize);
         } else {
           hItemIcon = document.createElement("img");
@@ -380,7 +395,7 @@ Module.register("MMM-DarkSkyForecast", {
           precipitationContainer.className = "hourly precipitation-container small";
 
           //inline icon
-          if (this.config.showInlineIcons && this.config.layout == "tiled") {
+          if (this.config.showInlineIcons && this.config.forecastLayout == "tiled") {
             var hUmbrellaIcon = document.createElement("img");
             hUmbrellaIcon.className = "icon inline rain";
             hUmbrellaIcon.src = this.generateIconSrc("i-rain");
@@ -410,7 +425,7 @@ Module.register("MMM-DarkSkyForecast", {
           windContainer.className = "hourly wind-container small";
 
           //inline icon
-          if (this.config.showInlineIcons && this.config.layout == "tiled") {
+          if (this.config.showInlineIcons && this.config.forecastLayout == "tiled") {
             var hWindIcon = document.createElement("img");
             hWindIcon.className = "icon inline wind-icon";
             hWindIcon.src = this.generateIconSrc("i-wind");
@@ -464,7 +479,7 @@ Module.register("MMM-DarkSkyForecast", {
 
         //icon
         var dItemIcon;
-        if (this.config.useAnimatedIcons && !this.config.animatedMainIconOnly) {
+        if (this.config.useAnimatedIcons && !this.config.animateMainIconOnly) {
           dItemIcon = this.addIcon(d.icon, this.config.forecastIconSize);
         } else {
           dItemIcon = document.createElement("img");
@@ -507,7 +522,7 @@ Module.register("MMM-DarkSkyForecast", {
           dPrecipContainer.className = "daily precipitation-container small";
 
           //inline icon
-          if (this.config.showInlineIcons && this.config.layout == "tiled") {
+          if (this.config.showInlineIcons && this.config.forecastLayout == "tiled") {
             var dUmbrellaIcon = document.createElement("img");
             dUmbrellaIcon.className = "icon inline rain";
             dUmbrellaIcon.src = this.generateIconSrc("i-rain");
@@ -537,7 +552,7 @@ Module.register("MMM-DarkSkyForecast", {
           dWindContainer.className = "daily wind-container small";
 
           //inline icon
-          if (this.config.showInlineIcons && this.config.layout == "tiled") {
+          if (this.config.showInlineIcons && this.config.forecastLayout == "tiled") {
             var DWindIcon = document.createElement("img");
             DWindIcon.className = "icon inline wind-icon";
             DWindIcon.src = this.generateIconSrc("i-wind");

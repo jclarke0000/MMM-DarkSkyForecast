@@ -27,7 +27,7 @@ module.exports = NodeHelper.create({
           "&lang=" + payload.language;
           // "&exclude=minutely"
 
-        // console.log("DarkSky URL = " + url);
+        console.log(moment().format("h:mm") +  " DarkSky URL = " + url);
 
         request({url: url, methid: "GET"}, function( error, response, body) {
 
