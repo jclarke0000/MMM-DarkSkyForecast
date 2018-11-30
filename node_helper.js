@@ -28,10 +28,6 @@ module.exports = NodeHelper.create({
           // "&exclude=minutely"
 
         
-        setTimeout(function() { //delay the request per config in case there are multiple modules running.
-
-          console.log(moment().format("h:mm") +  " DarkSky URL = " + url);
-
           request({url: url, methid: "GET"}, function( error, response, body) {
 
             if(!error && response.statusCode == 200) {
@@ -39,6 +35,7 @@ module.exports = NodeHelper.create({
               //Good response
               var resp = JSON.parse(body);
               resp.instanceId = payload.instanceId;
+              console.log("Sending data back to " + payload.instanceId);
               self.sendSocketNotification("DARK_SKY_FORECAST_DATA", resp);
 
             } else {
@@ -46,7 +43,6 @@ module.exports = NodeHelper.create({
             }
 
           });
-        }, payload.requestDelay);
 
       }
     }

@@ -5,7 +5,7 @@ Module.register("MMM-DarkSkyForecast", {
     latitude: "",
     longitude: "",
     updateInterval: 10, // minutes
-    requestDelay: 250,
+    requestDelay: 0,
     units: "ca",
     showCurrentConditions: true,
     showExtraCurrentConditions: true,
@@ -92,12 +92,18 @@ Module.register("MMM-DarkSkyForecast", {
     }
 
     //start data poll
-    this.getData();
     var self = this;
+    setTimeout(function() {
 
-    setInterval(function() {
+      //first data pull is delayed by config
       self.getData();
-    }, this.config.updateInterval * 60 * 1000); //convert to milliseconds
+
+      setInterval(function() {
+        self.getData();
+      }, self.config.updateInterval * 60 * 1000); //convert to milliseconds
+
+    }, this.config.requestDelay);
+    
 
   },
 
@@ -115,7 +121,9 @@ Module.register("MMM-DarkSkyForecast", {
   },
 
   socketNotificationReceived: function(notification, payload) {
+
     if (notification == "DARK_SKY_FORECAST_DATA" && payload.instanceId == this.identifier) {
+
 
       //render weather data
       this.weatherData = payload;
@@ -135,6 +143,8 @@ Module.register("MMM-DarkSkyForecast", {
       } 
 
     }
+
+
   },
 
   getDom: function() {
