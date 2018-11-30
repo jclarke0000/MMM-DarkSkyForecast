@@ -5,6 +5,7 @@ Module.register("MMM-DarkSkyForecast", {
     latitude: "",
     longitude: "",
     updateInterval: 10, // minutes
+    requestDelay: 0,
     units: "ca",
     showCurrentConditions: true,
     showExtraCurrentConditions: true,
@@ -107,7 +108,8 @@ Module.register("MMM-DarkSkyForecast", {
       longitude: this.config.longitude,
       units: this.config.units,
       language: this.config.language,
-      instanceId: this.identifier
+      instanceId: this.identifier,
+      requestDelay: this.config.requestDelay
     });
 
   },

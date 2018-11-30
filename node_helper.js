@@ -27,22 +27,26 @@ module.exports = NodeHelper.create({
           "&lang=" + payload.language;
           // "&exclude=minutely"
 
-        // console.log(moment().format("h:mm") +  " DarkSky URL = " + url);
+        
+        setTimeout(function() { //delay the request per config in case there are multiple modules running.
 
-        request({url: url, methid: "GET"}, function( error, response, body) {
+          console.log(moment().format("h:mm") +  " DarkSky URL = " + url);
 
-          if(!error && response.statusCode == 200) {
+          request({url: url, methid: "GET"}, function( error, response, body) {
 
-            //Good response
-            var resp = JSON.parse(body);
-            resp.instanceId = payload.instanceId;
-            self.sendSocketNotification("DARK_SKY_FORECAST_DATA", resp);
+            if(!error && response.statusCode == 200) {
 
-          } else {
-            console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** " + error );
-          }
+              //Good response
+              var resp = JSON.parse(body);
+              resp.instanceId = payload.instanceId;
+              self.sendSocketNotification("DARK_SKY_FORECAST_DATA", resp);
 
-        });
+            } else {
+              console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** " + error );
+            }
+
+          });
+        }, payload.requestDelay);
 
       }
     }
