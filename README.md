@@ -147,7 +147,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>label_timeFormat</code></td>
-      <td>How you want the time formatted for hourly forecast display.  Accepts any valid moment.js format (https://momentjs.com/docs/#/displaying/format/).<br>The short 24h format kann be displayed by <code>"H[h]"</code> (e.g.: <code>14h</code>)<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"h a"</code> (e.g.: <code>9 am</code>)</td>
+      <td>How you want the time formatted for hourly forecast display.  Accepts any valid moment.js format (https://momentjs.com/docs/#/displaying/format/).<br>The short 24h format kann be displayed by <code>"k[h]"</code> (e.g.: <code>14h</code>)<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"h a"</code> (e.g.: <code>9 am</code>)</td>
     </tr>
     <tr>
       <td><code>label_days</code></td>
