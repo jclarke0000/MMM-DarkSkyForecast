@@ -131,7 +131,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>forecastLayout</code></td>
-      <td>Can be set to <code>tiled</code> or <code>table</code>. How to display hourly and forecast information.  See below for screenshot examples of each.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>true</code></td>
+      <td>Can be set to <code>tiled</code> or <code>table</code>. How to display hourly and forecast information.  See below for screenshot examples of each.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>tiled</code></td>
     </tr>
     <tr>
       <td><code>label_maximum</code></td>
