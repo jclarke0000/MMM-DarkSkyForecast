@@ -10,7 +10,7 @@ Module.register("MMM-DarkSkyForecast", {
     showCurrentConditions: true,
     showExtraCurrentConditions: true,
     showSummary: true,
-    forecastTableHeaderText: '',
+    forecastHeaderText: "",
     showForecastTableColumnHeaderIcons: true,
     showHourlyForecast: true,
     hourlyForecastInterval: 3,
@@ -134,6 +134,9 @@ Module.register("MMM-DarkSkyForecast", {
       }
       this.updateDom(this.config.updateFadeSpeed);
 
+      //broadcast weather update
+      this.sendNotification("DARK_SKY_FORECAST_WEATHER_UPDATE", payload);
+
       //start icon playback
       if (this.config.useAnimatedIcons) {
         var self = this;
@@ -153,7 +156,8 @@ Module.register("MMM-DarkSkyForecast", {
     wrapper.className = "wrapper " + this.config.forecastLayout + 
       " icon-set-" + this.config.iconset +
       (this.config.colored ? " colored" : "") +
-      (this.config.showInlineIcons ? " inline-icons" : "");
+      (this.config.showInlineIcons ? " inline-icons" : "") +
+      (this.config.forecastHeaderText != "" ? " with-forecast-header" : "");
     
     if (this.weatherData == null) {
       var loading = document.createElement("div");
@@ -310,11 +314,11 @@ Module.register("MMM-DarkSkyForecast", {
       wrapper.appendChild(summaryWrapper);
     }
     
-    //forecastTableHeaderText
-    if (this.config.forecastTableHeaderText != "") {
-      var forecastHeader = document.createElement("div");
-      forecastHeader.className = "module-header";
-      forecastHeader.innerHTML = this.config.forecastTableHeaderText;
+    //forecastHeaderText
+    if (this.config.forecastHeaderText != "") {
+      var forecastHeader = document.createElement("header");
+      forecastHeader.className = "module-header forecast-header";
+      forecastHeader.innerHTML = this.config.forecastHeaderText;
       wrapper.appendChild(forecastHeader);
     }
 

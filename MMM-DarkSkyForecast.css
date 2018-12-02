@@ -77,19 +77,11 @@
   margin: 15px 0;
 }
 
-/* Module Header below current conditions */
 
-.MMM-DarkSkyForecast .module-header {
-  text-transform: uppercase;
-  font-size: 15px;
-  font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
-  font-weight: 400;
-  border-bottom: 1px solid #666;
-  line-height: 15px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  margin-bottom: 10px;
-  color: #999;
+/* Forecast Header */
+
+.MMM-DarkSkyForecast .module-header.forecast-header {
+  margin-bottom: 0;
 }
 
 /* ------------ Forecast ------------ */
@@ -105,6 +97,10 @@
   align-items: flex-start;
   margin-bottom: 0 30px;
   border-top: solid 1px #222;
+}
+
+.MMM-DarkSkyForecast .wrapper.with-forecast-header.tiled .forecast-container {
+  border-top: none;
 }
 
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item {
@@ -174,12 +170,18 @@
   width: 100%;
   font-size: 17px;
   line-height: 1;
+  border-bottom: solid 1px #222;
 }
 
 .MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item,
 .MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row {
   display: table-row;
-  border-bottom: solid 1px #222;  
+  border-top: solid 1px #222;
+}
+
+.MMM-DarkSkyForecast .wrapper.with-forecast-header.table .forecast-container > div:first-child,
+.MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row {
+  border-top: none;
 }
 
 .MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row .date-time-header {
@@ -196,11 +198,16 @@
   height: 40px;
 }
 
+
+
 .MMM-DarkSkyForecast .wrapper.table .forecast-container .header-row > span {
-  height: 30px;
+  height: 32px;
   font-size: 14px;
   text-transform: uppercase;
+  vertical-align: bottom;
+  padding-bottom: 2px;
 }
+
 
 .MMM-DarkSkyForecast .wrapper.table .forecast-container .forecast-item > span:first-child {
   text-align: left;

@@ -83,11 +83,11 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>forecastTableHeaderText</code></td>
-      <td>Show a header above the forecast table. Can be used instead of the regular header.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>''</code></td>
+      <td>Show a header above the forecast display.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>""</code></td>
     </tr>
     <tr>
       <td><code>showForecastTableColumnHeaderIcons</code></td>
-      <td>Whether to show icons for the columns of the forecast table.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
+      <td>Whether to show icons column headers on the forecast table.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
     <tr>
       <td><code>showHourlyForecast</code></td>
@@ -155,7 +155,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>label_timeFormat</code></td>
-      <td>How you want the time formatted for hourly forecast display.  Accepts any valid moment.js format (https://momentjs.com/docs/#/displaying/format/).<br>The short 24h format kann be displayed by <code>"k[h]"</code> (e.g.: <code>14h</code>)<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"h a"</code> (e.g.: <code>9 am</code>)</td>
+      <td>How you want the time formatted for hourly forecast display.  Accepts any valid moment.js format (https://momentjs.com/docs/#/displaying/format/). For example, specify short 24h format with <code>"k[h]"</code> (e.g.: <code>14h</code>)<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"h a"</code> (e.g.: <code>9 am</code>)</td>
     </tr>
     <tr>
       <td><code>label_days</code></td>
@@ -194,6 +194,12 @@ Find out your latitude and longitude here:
 
 ![Icon Sets](icons/iconsets.png?raw=true "Icon Sets")
 
+
 ## Layouts
 
 ![Layouts](/../screenshots/forecast-layouts.png?raw=true "Layouts")
+
+
+## For Module Developers
+
+This module broadcasts a notification when it recieves a weather update.  The notification is `DARK_SKY_FORECAST_WEATHER_UPDATE` and the payload contains Dark Sky's JSON weather forecast object.  For details on the weather object, see https://darksky.net/dev/docs.
