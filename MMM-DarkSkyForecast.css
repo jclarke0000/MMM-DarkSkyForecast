@@ -77,6 +77,20 @@
   margin: 15px 0;
 }
 
+/* Module Header below current conditions */
+
+.MMM-DarkSkyForecast .module-header {
+  text-transform: uppercase;
+  font-size: 15px;
+  font-family: "Roboto Condensed", Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  border-bottom: 1px solid #666;
+  line-height: 15px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  margin-bottom: 10px;
+  color: #999;
+}
 
 /* ------------ Forecast ------------ */
 

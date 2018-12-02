@@ -82,6 +82,14 @@ Find out your latitude and longitude here:
       <td>Whether to show the forecast summary.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
     <tr>
+      <td><code>forecastTableHeaderText</code></td>
+      <td>Show a header above the forecast table. Can be used instead of the regular header.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>''</code></td>
+    </tr>
+    <tr>
+      <td><code>showForecastTableColumnHeaderIcons</code></td>
+      <td>Whether to show icons for the columns of the forecast table.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
+    </tr>
+    <tr>
       <td><code>showHourlyForecast</code></td>
       <td>Whether to show hourly forecast information. when set to <code>true</code> it works with the <code>hourlyForecastInterval</code> and <code>maxHourliesToShow</code> parameters.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
@@ -131,7 +139,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>forecastLayout</code></td>
-      <td>Can be set to <code>tiled</code> or <code>table</code>. How to display hourly and forecast information.  See below for screenshot examples of each.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>true</code></td>
+      <td>Can be set to <code>tiled</code> or <code>table</code>. How to display hourly and forecast information.  See below for screenshot examples of each.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>tiled</code></td>
     </tr>
     <tr>
       <td><code>label_maximum</code></td>
@@ -147,7 +155,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>label_timeFormat</code></td>
-      <td>How you want the time formatted for hourly forecast display.  Accepts any valid moment.js format (https://momentjs.com/docs/#/displaying/format/).<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"h a"</code> (e.g.: <code>9 am</code>)</td>
+      <td>How you want the time formatted for hourly forecast display.  Accepts any valid moment.js format (https://momentjs.com/docs/#/displaying/format/).<br>The short 24h format kann be displayed by <code>"k[h]"</code> (e.g.: <code>14h</code>)<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"h a"</code> (e.g.: <code>9 am</code>)</td>
     </tr>
     <tr>
       <td><code>label_days</code></td>
