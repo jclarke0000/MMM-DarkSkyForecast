@@ -82,6 +82,14 @@ Find out your latitude and longitude here:
       <td>Whether to show the forecast summary.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
     <tr>
+      <td><code>forecastTableHeaderText</code></td>
+      <td>Show a header above the forecast table. Can be used instead of the regular header.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>''</code></td>
+    </tr>
+    <tr>
+      <td><code>showForecastTableColumnHeaderIcons</code></td>
+      <td>Whether to show icons for the columns of the forecast table.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
+    </tr>
+    <tr>
       <td><code>showHourlyForecast</code></td>
       <td>Whether to show hourly forecast information. when set to <code>true</code> it works with the <code>hourlyForecastInterval</code> and <code>maxHourliesToShow</code> parameters.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
