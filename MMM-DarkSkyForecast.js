@@ -81,7 +81,7 @@ Module.register("MMM-DarkSkyForecast", {
       this.config.units = "ca";
     } 
     if (this.validLayouts.indexOf(this.config.forecastLayout) == -1) {
-      this.config.units = "tiled";
+      this.config.forecastLayout = "tiled";
     } 
     if (this.iconsets[this.config.iconset] == null) {
       this.config.iconset = "1c";
