@@ -82,7 +82,7 @@ Find out your latitude and longitude here:
       <td>Whether to show the forecast summary.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
     <tr>
-      <td><code>forecastTableHeaderText</code></td>
+      <td><code>forecastHeaderText</code></td>
       <td>Show a header above the forecast display.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>""</code></td>
     </tr>
     <tr>
