@@ -167,9 +167,6 @@ Module.register("MMM-DarkSkyForecast", {
       return wrapper;
     }
 
-    // if (this.config.useAnimatedIcons) {
-    //   this.clearIcons();
-    // }
 
     //current conditions
     if (this.config.showCurrentConditions) {
