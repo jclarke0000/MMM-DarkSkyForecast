@@ -35,7 +35,7 @@ Module.register("MMM-DarkSkyForecast", {
     label_low: "L",
     label_timeFormat: "h a",
     label_days: ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"],
-    label_ordinals: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+    label_ordinals: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"],
   },
 
   getScripts: function() {
@@ -302,11 +302,11 @@ Module.register("MMM-DarkSkyForecast", {
       summary.classList.add("summary");
 
       if (this.config.concise) {
-        summary.innerHTML = this.weatherData.hourly.summary;
+        summary.innerHTML = this.weatherData.hourly ? this.weatherData.hourly.summary : this.weatherData.currently.summary;
       } else {
-        summary.innerHTML = this.weatherData.minutely.summary + " " +
-          this.weatherData.hourly.summary + " " +
-          this.weatherData.daily.summary;     
+        summary.innerHTML = (this.weatherData.minutely ? this.weatherData.minutely.summary : this.weatherData.currently.summary + ".") + " " +
+          (this.weatherData.hourly ? this.weatherData.hourly.summary + " " : "") +
+          (this.weatherData.daily ? this.weatherData.daily.summary : "");
       }
 
       summaryWrapper.appendChild(summary);

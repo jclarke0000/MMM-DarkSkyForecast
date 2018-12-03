@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+.MMM-DarkSkyForecast .module-content {
+  width: 300px;
+}
+
 .MMM-DarkSkyForecast .forecast-container .forecast-item .temperature,
 .MMM-DarkSkyForecast .forecast-container .forecast-item .temperature-container {
   color: #FFFFFF;
