@@ -200,6 +200,19 @@ Find out your latitude and longitude here:
 ![Layouts](/../screenshots/forecast-layouts.png?raw=true "Layouts")
 
 
+## Styling
+
+This module is set to be 300px wide by default.  If you wish to override it, you can add the following to your `custom.css` file:
+
+```
+.MMM-DarkSkyForecast .module-content {
+  width: 500px; /* adjust this to taste */
+}
+```
+
+Most important elements of this module have one or more class names applied. Examine the `MMM-DarkSkyForecast.css` or inspect elements directly with your browser of choice to determine what class you would like to override.
+
+
 ## For Module Developers
 
 This module broadcasts a notification when it recieves a weather update.  The notification is `DARK_SKY_FORECAST_WEATHER_UPDATE` and the payload contains Dark Sky's JSON weather forecast object.  For details on the weather object, see https://darksky.net/dev/docs.
