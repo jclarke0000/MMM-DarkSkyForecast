@@ -46,6 +46,30 @@ Module.register("MMM-DarkSkyForecast", {
     return ["MMM-DarkSkyForecast.css"];
   },
 
+  getTemplate: function () {
+    return "mmm-darksky-forecast.njk"
+  },
+
+  getTemplateData: function () {
+    return {
+      phrases: {
+        loading: this.translate("LOADING")
+      },
+      loading: this.formattedWeatherData == null ? true : false,
+      config: this.config,
+      forecast: this.formattedWeatherData,
+      inlineIcons : {
+        rain: this.generateIconSrc("i-rain"),
+        wind: this.generateIconSrc("i-wind")
+      },
+      animatedIconSizes : {
+        main: this.config.mainIconSize,
+        forecast: this.config.forecastIconSize
+      }
+
+    }
+  },
+
   validUnits: ["ca","si","uk2","us"],
   validLayouts: ["tiled", "table"],
 
@@ -56,6 +80,7 @@ Module.register("MMM-DarkSkyForecast", {
     this.weatherData = null;
     this.iconCache = [];
     this.iconIdCounter = 0;
+    this.formattedWeatherData = null;
 
     if (this.config.useAnimatedIcons) {
       this.skycons = new Skycons({
@@ -125,13 +150,15 @@ Module.register("MMM-DarkSkyForecast", {
 
     if (notification == "DARK_SKY_FORECAST_DATA" && payload.instanceId == this.identifier) {
 
-
-      //render weather data
-      this.weatherData = payload;
-
+      //clear animated icon cache
       if (this.config.useAnimatedIcons) {
         this.clearIcons();
       }
+
+      //process weather data
+      this.weatherData = payload;
+      this.formattedWeatherData = this.processWeatherData();
+
       this.updateDom(this.config.updateFadeSpeed);
 
       //broadcast weather update
@@ -150,154 +177,23 @@ Module.register("MMM-DarkSkyForecast", {
 
   },
 
-
-
   /*
-    Generate the module display
-   */
-  getDom: function() {
+    This prepares the data to be used by the Nunjucks template.  The template does not do any logic other
+    if statements to determine if a certain section should be displayed, and a simple loop to go through
+    the houly / daily forecast items.
+  */
+  processWeatherData: function() {
 
-    var wrapper = document.createElement("div");
-    wrapper.className = "wrapper " + this.config.forecastLayout + 
-      " icon-set-" + this.config.iconset +
-      (this.config.colored ? " colored" : "") +
-      (this.config.showInlineIcons ? " inline-icons" : "") +
-      (this.config.forecastHeaderText != "" ? " with-forecast-header" : "");
-    
-    if (this.weatherData == null) {
-      var loading = document.createElement("div");
-      loading.innerHTML = this.translate("LOADING");
-      loading.className = "dimmed light small";
-      wrapper.appendChild(loading);
-      return wrapper;
+    var summary;
+    if (this.config.concise) {
+      summary = this.weatherData.hourly ? this.weatherData.hourly.summary : this.weatherData.currently.summary;
+    } else {
+      summary = (this.weatherData.minutely ? this.weatherData.minutely.summary : this.weatherData.currently.summary + ".") + " " +
+        (this.weatherData.hourly ? this.weatherData.hourly.summary + " " : "") +
+        (this.weatherData.daily ? this.weatherData.daily.summary : "");
     }
 
-
-    //current conditions
-    if (this.config.showCurrentConditions) {
-
-      var currentConditionsWrapper = document.createElement("div");
-      currentConditionsWrapper.classList.add("current-conditions-wrapper");
-
-      var currentConditionsIcon;
-
-      if (this.config.useAnimatedIcons) {
-        currentConditionsIcon = this.addIcon(this.weatherData.currently.icon, this.config.mainIconSize);
-      } else {
-        currentConditionsIcon = document.createElement("img");
-        currentConditionsIcon.src = this.generateIconSrc(this.weatherData.currently.icon);
-      }
-
-      currentConditionsIcon.className = "current icon current";
-      currentConditionsWrapper.appendChild(currentConditionsIcon);
-
-      var currentTemp = document.createElement("span");
-      currentTemp.className = "current temperature bright large light";
-      currentTemp.innerHTML = Math.round(this.weatherData.currently.temperature) + "°";
-      currentConditionsWrapper.appendChild(currentTemp);
-
-
-      wrapper.appendChild(currentConditionsWrapper);
-    }
-
-    //extra current conditions
-    if (this.config.showExtraCurrentConditions) {
-      var extraCurrentConditionsWrapper = document.createElement("div");
-      extraCurrentConditionsWrapper.className = "extra-current-conditions-wrapper small bright";
-
-      extraCurrentConditionsWrapper.appendChild(this.formatHiLowTemperature(this.weatherData.daily.data[0].temperatureMax,this.weatherData.daily.data[0].temperatureMin));
-
-
-      //precipitation
-      if (this.config.showPrecipitation) {
-        extraCurrentConditionsWrapper.appendChild(this.formatPrecipitation(this.weatherData.currently.precipProbability, this.weatherData.currently.precipAccumulation, this.weatherData.currently.precipIntensityMax, this.weatherData.currently.precipIntensity, this.config.showInlineIcons));
-      }
-
-      //wind
-      if (this.config.showWind) {        
-        extraCurrentConditionsWrapper.appendChild(this.formatWind(this.weatherData.currently.windSpeed, this.weatherData.currently.windBearing, this.weatherData.currently.windGust, this.config.showInlineIcons));
-      }
-
-      wrapper.appendChild(extraCurrentConditionsWrapper);
-
-    }
-
-    //summary
-    if (this.config.showSummary) {
-
-      var summaryWrapper = document.createElement("div");
-      summaryWrapper.className = "summary-wrapper small";
-
-      var summary = document.createElement("div");
-      summary.classList.add("summary");
-
-      if (this.config.concise) {
-        summary.innerHTML = this.weatherData.hourly ? this.weatherData.hourly.summary : this.weatherData.currently.summary;
-      } else {
-        summary.innerHTML = (this.weatherData.minutely ? this.weatherData.minutely.summary : this.weatherData.currently.summary + ".") + " " +
-          (this.weatherData.hourly ? this.weatherData.hourly.summary + " " : "") +
-          (this.weatherData.daily ? this.weatherData.daily.summary : "");
-      }
-
-      summaryWrapper.appendChild(summary);
-
-      wrapper.appendChild(summaryWrapper);
-    }
-    
-    //forecastHeaderText
-    if (this.config.forecastHeaderText != "" && (this.config.showHourlyForecast || this.config.showDailyForecast)) {
-      var forecastHeader = document.createElement("header");
-      forecastHeader.className = "module-header forecast-header";
-      forecastHeader.innerHTML = this.config.forecastHeaderText;
-      wrapper.appendChild(forecastHeader);
-    }
-
-    var forecastWrapper;
-    if (this.config.showHourlyForecast || this.config.showDailyForecast) {
-      forecastWrapper = document.createElement("div");
-      forecastWrapper.className = "forecast-container";
-
-      if (this.config.forecastLayout == "table" && this.config.showForecastTableColumnHeaderIcons) {
-        var headerRow = document.createElement("div");
-        headerRow.className = "header-row";
-
-        var hTime = document.createElement("span");
-        hTime.className = "date-time-header";
-        hTime.innerHTML = "&nbsp;";
-        headerRow.appendChild(hTime);
-
-        var hIcon = document.createElement("span");
-        hIcon.innerHTML = "&nbsp;";
-        headerRow.appendChild(hIcon);
-
-        var htemp = document.createElement("span");
-        htemp.innerHTML = "&nbsp;";
-        headerRow.appendChild(htemp);
-
-        if (this.config.showPrecipitation) {
-          var hPrecip = document.createElement("span");
-          var hdrRainIcon = document.createElement("img");
-          hdrRainIcon.className = "inline-icon rain";
-          hdrRainIcon.src = this.generateIconSrc("i-rain");
-          hPrecip.appendChild(hdrRainIcon);          
-          headerRow.appendChild(hPrecip);
-        }
-
-        if (this.config.showWind) {
-          var hdrWind = document.createElement("span");
-          var hdrWindIcon = document.createElement("img");
-          hdrWindIcon.className = "inline-icon wind-icon";
-          hdrWindIcon.src = this.generateIconSrc("i-wind");
-          hdrWind.appendChild(hdrWindIcon);          
-          headerRow.appendChild(hdrWind);
-        }
-
-        forecastWrapper.appendChild(headerRow);
-      } 
-
-    }
-
-    //hourly forecast
+    var hourlies = [];
     if (this.config.showHourlyForecast) {
 
       var displayCounter = 0;
@@ -307,7 +203,7 @@ Module.register("MMM-DarkSkyForecast", {
           break;
         }
 
-        forecastWrapper.appendChild(this.forecastItemFactory(this.weatherData.hourly.data[currentIndex], "hourly"));
+        hourlies.push(this.forecastItemFactory(this.weatherData.hourly.data[currentIndex], "hourly"));
 
         currentIndex += this.config.hourlyForecastInterval;
         displayCounter++;
@@ -316,7 +212,7 @@ Module.register("MMM-DarkSkyForecast", {
 
     }
 
-    //daily forecast
+    var dailies = [];
     if (this.config.showDailyForecast) {
 
       for (var i = 1; i <= this.config.maxDailiesToShow; i++) {
@@ -324,185 +220,110 @@ Module.register("MMM-DarkSkyForecast", {
           break;
         }
 
-        forecastWrapper.appendChild(this.forecastItemFactory(this.weatherData.daily.data[i], "daily"));
+        dailies.push(this.forecastItemFactory(this.weatherData.daily.data[i], "daily"));
       }
 
     }
 
-    if (this.config.showHourlyForecast || this.config.showDailyForecast) {
-      wrapper.appendChild(forecastWrapper);
-    }
 
-    return wrapper;
+    return {
+      "currently" : {
+        temperature: Math.round(this.weatherData.currently.temperature) + "°",
+        animatedIconId: this.config.useAnimatedIcons ? this.addIcon(this.weatherData.currently.icon) : null,
+        iconPath: this.generateIconSrc(this.weatherData.currently.icon),
+        tempRange: this.formatHiLowTemperature(this.weatherData.daily.data[0].temperatureMax,this.weatherData.daily.data[0].temperatureMin),
+        precipitation: this.formatPrecipitation(this.weatherData.currently.precipProbability, this.weatherData.currently.precipAccumulation, this.weatherData.currently.precipIntensityMax, this.weatherData.currently.precipIntensity),
+        wind: this.formatWind(this.weatherData.currently.windSpeed, this.weatherData.currently.windBearing, this.weatherData.currently.windGust),
 
+      },
+      "summary" : summary,
+      "hourly" : hourlies,
+      "daily" : dailies,
+    };
+  },  
 
-  },
 
   forecastItemFactory: function(fData, type) {
 
-    // console.log("generating " + type + " forecast item");
-    var fItem = document.createElement("div");
-    fItem.className = "forecast-item " + type;
-
+    var fItem = new Object();
 
     // --------- Date / Time Display ---------
     if (type == "daily") {
 
       //day name (e.g.: "MON")
-      var day = document.createElement("span");
-      day.className = "day-name bright small";
-      day.innerHTML = this.config.label_days[moment(fData.time * 1000).format("d")];
-      fItem.appendChild(day);
+      fItem.day = this.config.label_days[moment(fData.time * 1000).format("d")];
 
     } else { //hourly
 
       //time (e.g.: "5 PM")
-      var time = document.createElement("span");
-      time.className = "time small bright";
-      time.innerHTML = moment(fData.time * 1000).format(this.config.label_timeFormat);
-      fItem.appendChild(time);
+      fItem.time = moment(fData.time * 1000).format(this.config.label_timeFormat);
     }
 
     // --------- Icon ---------
-    var icon;
     if (this.config.useAnimatedIcons && !this.config.animateMainIconOnly) {
-      icon = this.addIcon(fData.icon, this.config.forecastIconSize);
-    } else {
-      icon = document.createElement("img");
-      icon.src = this.generateIconSrc(fData.icon);
-    }    
-    icon.className = "forecast-icon";
-
-    var iconContainer = document.createElement("span");
-    iconContainer.className = "forecast-icon-container";
-    iconContainer.appendChild(icon);
-    fItem.appendChild(iconContainer);
-
+      fItem.animatedIconId = this.addIcon(fData.icon, this.config.forecastIconSize);
+    }
+    fItem.iconPath = this.generateIconSrc(fData.icon);
 
     // --------- Temperature ---------
 
     if (type == "hourly") { //just display projected temperature for that hour
-
-      var temp = document.createElement("span");
-      temp.className = "temperature small";
-      temp.innerHTML = Math.round(fData.temperature) + "°";
-      fItem.appendChild(temp);
-
+      fItem.temperature = Math.round(fData.temperature) + "°";
     } else { //display High / Low temperatures
-
-      fItem.appendChild(this.formatHiLowTemperature(fData.temperatureMax,fData.temperatureMin));
-
+      fItem.tempRange = this.formatHiLowTemperature(fData.temperatureMax,fData.temperatureMin);
     }
-
 
     // --------- Precipitation ---------
-    if (this.config.showPrecipitation) {
-      fItem.appendChild(this.formatPrecipitation(fData.precipProbability,fData.precipAccumulation,fData.precipIntensityMax,fData.precipIntensity));          
-    }
+    fItem.precipitation = this.formatPrecipitation(fData.precipProbability,fData.precipAccumulation,fData.precipIntensityMax,fData.precipIntensity);
 
     // --------- Wind ---------
-    if (this.config.showWind) {
-      fItem.appendChild(this.formatWind(fData.windSpeed, fData.windBearing, fData.windGust));
-    }
+    fItem.wind = (this.formatWind(fData.windSpeed, fData.windBearing, fData.windGust));
 
     return fItem;
   },
 
   formatHiLowTemperature: function(h,l) {
-
-    var tempContainer = document.createElement("span");
-    tempContainer.className = "temperature-container small";
-
-    //high temperature
-    var hiTemp = document.createElement("span");
-    hiTemp.className = "high-temperature";
-    hiTemp.innerHTML = (!this.config.concise ? this.config.label_high + " " : "") + Math.round(h) + "°";
-    tempContainer.appendChild(hiTemp);
-
-    //separator
-    var tempSeparator = document.createElement("span");
-    tempSeparator.className = "temperature-separator dimmed";
-    tempSeparator.innerHTML = " / ";
-    tempContainer.appendChild(tempSeparator);
-
-    //low temperature
-    var loTemp = document.createElement("span");
-    loTemp.className = "low-temperature";
-    loTemp.innerHTML = (!this.config.concise ? this.config.label_low + " " : "") + Math.round(l) + "°";
-    tempContainer.appendChild(loTemp);
-
-    return tempContainer;
+    return {
+      high: (!this.config.concise ? this.config.label_high + " " : "") + Math.round(h) + "°",
+      low: (!this.config.concise ? this.config.label_low + " " : "") + Math.round(l) + "°"
+    };
   },
 
-  formatPrecipitation: function(percentChance, snowAccumulation, rainIntensityMax, rainIntensity, forceIcon) {
+  formatPrecipitation: function(percentChance, snowAccumulation, rainIntensityMax, rainIntensity) {
 
-    var precipContainer = document.createElement("span");
-    precipContainer.className = "precipitation-container small";
-
-    //inline icon
-    if (forceIcon || (this.config.showInlineIcons && this.config.forecastLayout == "tiled")) {
-      var rainIcon = document.createElement("img");
-      rainIcon.className = "inline-icon rain";
-      rainIcon.src = this.generateIconSrc("i-rain");
-      precipContainer.appendChild(rainIcon);          
-    } 
-
-    //POP
-    var pop = document.createElement("span");
-    pop.className = "pop";
-    pop.innerHTML = Math.round(percentChance * 100) + "%";
-    precipContainer.appendChild(pop);
+    var accumulation = null;
 
     //accumulation
     if (!this.config.concise && percentChance > 0) {
-      var accumulation = document.createElement("span");
-      accumulation.className = "accumulation";
-
-      var accumulationHTML;
       if (snowAccumulation) { //snow
-        accumulationHTML = Math.round(snowAccumulation) + " " + this.getUnit("accumulationSnow");
+        accumulation = Math.round(snowAccumulation) + " " + this.getUnit("accumulationSnow");
       } else if (rainIntensityMax){ //max rate for the day
-        accumulationHTML = (Math.round(rainIntensityMax * 10) / 10) + " " + this.getUnit("accumulationRain");
+        accumulation = (Math.round(rainIntensityMax * 10) / 10) + " " + this.getUnit("accumulationRain");
       } else { //rate for the hour
-        accumulationHTML = (Math.round(rainIntensity * 10) / 10) + " " + this.getUnit("accumulationRain");
+        accumulation = (Math.round(rainIntensity * 10) / 10) + " " + this.getUnit("accumulationRain");
       }
-      accumulation.innerHTML = "(" + accumulationHTML + ")";
-
-      precipContainer.appendChild(accumulation);
+      accumulation = "(" + accumulation + ")";
     }
 
-    return precipContainer;
+    return {
+      pop: Math.round(percentChance * 100) + "%",
+      accumulation: accumulation
+    };
 
   },
 
-  formatWind: function(speed, bearing, gust, forceIcon) {
-
-    var windContainer = document.createElement("span");
-    windContainer.className = "wind-container";
-
-    //inline icon
-    if (forceIcon || (this.config.showInlineIcons && this.config.forecastLayout == "tiled")) {
-      var windIcon = document.createElement("img");
-      windIcon.className = "inline-icon wind-icon";
-      windIcon.src = this.generateIconSrc("i-wind");
-      windContainer.appendChild(windIcon);          
-    } 
-
-    //wind speed
-    var windSpeed = document.createElement("span");
-    windSpeed.className = "wind-speed";
-    windSpeed.innerHTML = Math.round(speed) + " " + this.getUnit("windSpeed") + (!this.config.concise ? " " + this.getOrdinal(bearing) : "");
-    windContainer.appendChild(windSpeed);
+  formatWind: function(speed, bearing, gust) {
 
     //wind gust
+    var windGust = null;
     if (!this.config.concise && gust) {
-      var windGust = document.createElement("span");
-      windGust.className = "wind-gusts";
-      windGust.innerHTML = " (" + this.config.label_maximum + " " + Math.round(gust) + " " + this.getUnit("windSpeed") + ")";
-      windContainer.appendChild(windGust);
+      windGust = " (" + this.config.label_maximum + " " + Math.round(gust) + " " + this.getUnit("windSpeed") + ")";
     }    
 
-    return windContainer;
+    return {
+      windSpeed: Math.round(speed) + " " + this.getUnit("windSpeed") + (!this.config.concise ? " " + this.getOrdinal(bearing) : ""),
+      windGust: windGust
+    };
   },
 
   getUnit: function(metric) {
@@ -563,10 +384,10 @@ Module.register("MMM-DarkSkyForecast", {
     this.iconIdCounter = 0;
   },
 
-  addIcon: function(icon, size) {
+  addIcon: function(icon) {
 
     //id to use for the canvas element
-    var iconId = "skycon_" + this.iconIdCounter;
+    var iconId = "skycon_" + this.iconCache.length;
 
     //add id and icon name to cache
     this.iconCache.push({
@@ -574,28 +395,25 @@ Module.register("MMM-DarkSkyForecast", {
       "icon" : icon
     });
 
-    //build canvas elemenet
-    var iconElem = document.createElement("canvas");
-    iconElem.id = iconId;
-    iconElem.width = size;
-    iconElem.height = size;        
-    this.iconIdCounter++; 
-
-    return iconElem;
+    console.log(this.iconCache.length + " icons");
+    return iconId;
   },
 
   playIcons: function(inst) {
     /*
       name is a bit misleading. We needed to wait until
       the canvas elements got added to the Dom, which doesn't
-      happen until after getDom finishes executing.
+      happen until after updateDom() finishes executing.
     */
+    console.log("playing " + inst.iconCache.length + " icons.")
     inst.iconCache.forEach(function(icon) {
       inst.skycons.add(icon.id, icon.icon);
     });
     inst.skycons.play();
 
   }
+
+
 
 
 });

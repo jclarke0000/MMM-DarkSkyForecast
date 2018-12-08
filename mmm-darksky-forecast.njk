@@ -1,14 +1,223 @@
-<div class="wrapper">
+<div class="wrapper {{ config.forecastLayout }} icon-set-{{ config.iconset }}{% if config.colored %} colored{% endif %}{% if config.showInlineIcons %} inline-icons{% endif %}{% if config.forecastHeaderText %} with-forecast-header{% endif %}">
 
   {% if loading %}
 
-    <span class="small dimmed">{{ phrases.loading | safe }}</span>
+    <div class="dimmed light small">{{ phrases.loading | safe }}</div>
 
   {% else %}
 
-    <div class="current-conditions-wrapper">
-      <span class="current-temperature">{{ currently.temperature }}°</span>
-    </div>
+    {# -------------- Current Conditions -------------- #}
+    {% if config.showCurrentConditions %}
+      <div class="current-conditions-wrapper">
+        <span class="current-conditions-wrapper">
+          {% if forecast.currently.animatedIconId %}
+            <canvas class="current icon current" id="{{ forecast.currently.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.main }}"></canvas>
+          {% else %}
+            <img class="current icon current" src="{{ forecast.currently.iconPath }}" />
+          }
+          {% endif %}
+          <span class="current temperature bright large light">{{ forecast.currently.temperature }}</span>
+        </span>
+      </div>
+    {% endif %}
+
+    {# -------------- Extra Current Conditions -------------- #}
+    {% if config.showExtraCurrentConditions %}
+      <div class="extra-current-conditions-wrapper small bright">
+        <span class="temperature-container">
+          <span class="high-temperature">{{ forecast.currently.tempRange.high }}</span>
+          <span class="temperature-separator dimmed">/</span>
+          <span class="low-temperature">{{ forecast.currently.tempRange.low }}</span>
+        </span>
+
+        {% if config.showPrecipitation %}
+          
+          <span class="precipitation-container">
+            {% if (config.showInlineIcons) %}
+              <img class="inline-icon rain" src="{{ inlineIcons.rain }}" />
+            {% endif %}
+
+            <span class="pop">{{ forecast.currently.precipitation.pop }}</span>
+            
+            {% if forecast.currently.precipitation.accumulation %}
+              <span class="pop">{{ forecast.currently.precipitation.accumulation }}</span>
+            {% endif %}
+          </span>
+
+        {% endif %}
+
+        {% if config.showWind %}
+          <span class="wind-container">
+            {% if (config.showInlineIcons) %}
+              <img class="inline-icon wind-icon" src="{{ inlineIcons.wind }}" />
+            {% endif %}
+
+            <span class="wind-speed">{{ forecast.currently.wind.windSpeed }}</span>
+            
+            {% if forecast.currently.wind.windGust %}
+              <span class="wind-gusts">{{ forecast.currently.wind.windGust }}</span>
+            {% endif %}
+
+          </span>
+
+        {% endif %}
+
+
+      </div>
+    {% endif %}
+
+    {# -------------- Summary -------------- #}
+    {% if config.showSummary %}
+      <div class="summary-wrapper small">
+        <div class="summary">{{ forecast.summary }}</div>
+      </div>
+    {% endif %}
+
+    {# -------------- Forecast Title -------------- #}
+    {% if not (config.forecastHeaderText == "") and (config.showHourlyForecast or config.showDailyForecast) %}
+      <header class="module-header forecast-header">{{ config.forecastHeaderText | safe }}</header>
+    {% endif %}
+
+    {# -------------- Forecast -------------- #}
+    {% if config.showHourlyForecast or config.showDailyForecast %}
+      <div class="forecast-container">
+
+        {% if config.showForecastTableColumnHeaderIcons and config.forecastLayout == "table" %}
+          <div class="header-row">
+            <span class="date-time-header">&nbsp;</span>
+            <span class="weather-icon-header">&nbsp;</span>
+            <span class="temperature-header">&nbsp;</span>
+
+            {% if config.showPrecipitation %}
+              <span class="precipitation-header">
+                <img class="inline-icon rain" src="{{ inlineIcons.rain }}" />
+              </span>
+            {% endif %}
+
+            {% if config.showWind %}
+              <span class="wind-header">
+                <img class="inline-icon wind" src="{{ inlineIcons.wind }}" />
+              </span>
+            {% endif %}
+          </div>
+
+        {% endif %}
+
+        {# Hourly #}
+        {% if config.showHourlyForecast %}
+
+
+          {% for h in forecast.hourly %}
+            <div class="forecast-item hourly">
+              <span class="time">{{ h.time }}</span>
+              <span class="forecast-icon-container">
+              {% if h.animatedIconId %}
+                <canvas class="forecast-icon" id="{{ h.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.forecast }}"></canvas>
+              {% else %}
+                <img class="forecast-icon" src="{{ h.iconPath }}" />
+              {% endif %}
+              </span>
+              <span class="temperature small">{{ h.temperature }}</span>
+
+
+              {% if config.showPrecipitation %}
+      
+                <span class="precipitation-container">
+                  {% if (config.showInlineIcons and config.forecastLayout == "tiled" ) %}
+                    <img class="inline-icon rain" src="{{ inlineIcons.rain }}" />
+                  {% endif %}
+
+                  <span class="pop">{{ h.precipitation.pop }}</span>
+                  
+                  {% if h.accumulation %}
+                    <span class="pop">{{ h.precipitation.accumulation }}</span>
+                  {% endif %}
+                </span>
+
+              {% endif %}
+
+              {% if config.showWind %}
+                <span class="wind-container">
+                  {% if (config.showInlineIcons and config.forecastLayout == "tiled" ) %}
+                    <img class="inline-icon wind-icon" src="{{ inlineIcons.wind }}" />
+                  {% endif %}
+
+                  <span class="wind-speed">{{ h.wind.windSpeed }}</span>
+                  
+                  {% if h.wind.windGust %}
+                    <span class="wind-gusts">{{ h.wind.windGust }}</span>
+                  {% endif %}
+
+                </span>
+
+              {% endif %}
+
+            </div>
+          {% endfor %}
+
+        {% endif %}
+
+
+        {# Daily #}
+        {% if config.showDailyForecast %}
+
+
+          {% for d in forecast.daily %}
+            <div class="forecast-item hourly">
+              <span class="day-name">{{ d.day }}</span>
+              <span class="forecast-icon-container">
+              {% if d.animatedIconId %}
+                <canvas class="forecast-icon" id="{{ d.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.forecast }}"></canvas>
+              {% else %}
+                <img class="forecast-icon" src="{{ d.iconPath }}" />
+              {% endif %}
+              </span>
+              <span class="temperature-container small">
+                <span class="high-temperature">{{ d.tempRange.high }}</span>
+                <span class="temperature-separator dimmed">/</span>
+                <span class="low-temperature">{{ d.tempRange.low }}</span>
+              </span>
+
+
+              {% if config.showPrecipitation %}
+      
+                <span class="precipitation-container">
+                  {% if (config.showInlineIcons and config.forecastLayout == "tiled" ) %}
+                    <img class="inline-icon rain" src="{{ inlineIcons.rain }}" />
+                  {% endif %}
+
+                  <span class="pop">{{ d.precipitation.pop }}</span>
+                  
+                  {% if d.accumulation %}
+                    <span class="pop">{{ d.precipitation.accumulation }}</span>
+                  {% endif %}
+                </span>
+
+              {% endif %}
+
+              {% if config.showWind %}
+                <span class="wind-container">
+                  {% if (config.showInlineIcons and config.forecastLayout == "tiled" ) %}
+                    <img class="inline-icon wind-icon" src="{{ inlineIcons.wind }}" />
+                  {% endif %}
+
+                  <span class="wind-speed">{{ d.wind.windSpeed }}</span>
+                  
+                  {% if d.wind.windGust %}
+                    <span class="wind-gusts">{{ d.wind.windGust }}</span>
+                  {% endif %}
+
+                </span>
+
+              {% endif %}
+
+            </div>
+          {% endfor %}
+
+        {% endif %}
+
+      </div>
+    {% endif %}      
 
   {% endif %}
 
