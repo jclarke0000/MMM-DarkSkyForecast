@@ -14,7 +14,6 @@
             <canvas class="current icon current" id="{{ forecast.currently.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.main }}"></canvas>
           {% else %}
             <img class="current icon current" src="{{ forecast.currently.iconPath }}" />
-          }
           {% endif %}
           <span class="current temperature bright large light">{{ forecast.currently.temperature }}</span>
         </span>

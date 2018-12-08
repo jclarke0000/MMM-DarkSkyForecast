@@ -177,6 +177,27 @@ Module.register("MMM-DarkSkyForecast", {
 
   },
 
+  // resume: function() {
+
+  //   console.log(" --------------- Resume hook -------------------");
+
+  //   //clear animated icon cache
+  //   if (this.config.useAnimatedIcons) {
+  //     this.clearIcons();
+  //   }
+
+  //   this.updateDom();
+
+  //   //start icon playback
+  //   if (this.config.useAnimatedIcons) {
+  //     var self = this;
+  //     setTimeout(function() {
+  //       self.playIcons(self);
+  //     }, this.config.updateFadeSpeed);
+  //   } 
+
+  // },
+
   /*
     This prepares the data to be used by the Nunjucks template.  The template does not do any logic other
     if statements to determine if a certain section should be displayed, and a simple loop to go through
@@ -395,7 +416,7 @@ Module.register("MMM-DarkSkyForecast", {
       "icon" : icon
     });
 
-    console.log(this.iconCache.length + " icons");
+    // console.log(this.iconCache.length + " icons");
     return iconId;
   },
 
@@ -405,7 +426,7 @@ Module.register("MMM-DarkSkyForecast", {
       the canvas elements got added to the Dom, which doesn't
       happen until after updateDom() finishes executing.
     */
-    console.log("playing " + inst.iconCache.length + " icons.")
+    // console.log("playing " + inst.iconCache.length + " icons.");
     inst.iconCache.forEach(function(icon) {
       inst.skycons.add(icon.id, icon.icon);
     });
