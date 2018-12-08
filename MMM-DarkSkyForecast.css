@@ -120,7 +120,7 @@
   border-bottom: solid 1px #222;
 }
 
-.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .icon {
+.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-icon {
   width: 70px;
   height: 70px;
 }
@@ -130,7 +130,8 @@
 }
 
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .time,
-.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .icon,
+.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .forecast-icon-container,
+.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .forecast-icon,
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .temperature,
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .temperature-container,
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .precipitation-container,
