@@ -120,10 +120,6 @@
   border-bottom: solid 1px #222;
 }
 
-.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-icon {
-  width: 70px;
-  height: 70px;
-}
 
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container * {
   text-align: center;
@@ -139,6 +135,12 @@
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .day-name {
   display: block;
   margin: auto;
+}
+
+.MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .forecast-icon {
+  width: 70px;
+  height: 70px;
+  margin: 4px auto;
 }
 
 .MMM-DarkSkyForecast .wrapper.tiled .forecast-container .forecast-item .time,
