@@ -247,5 +247,6 @@ https://www.graphberry.com/item/weathera-weather-forecast-icons
 Some of the icons were modified to better work with the module's
 structure and aesthetic.
 
-Weather data provided by Dark Sky
+**Weather data provided by Dark Sky**<br />
+https://darksky.net/
 
