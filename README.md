@@ -10,7 +10,7 @@ A weather module that displays current, hourly and daily forecast information
 using data from the Dark Sky API. This is a replacement module for MMM-MyWeather, now that Weather Underground no longer allows free API access.  This a complete rewrite from scratch but maintains
 much of the same functionality.
 
-**NOTE** This module uses the Nunjucks templating system introduced in version 2.2.0 of MagicMirror.  If you're seeing nothing on your display where you expect this module to appear, make sure your MagicMirror version is at least 2.2.0.
+**NOTE :** This module uses the Nunjucks templating system introduced in version 2.2.0 of MagicMirror.  If you're seeing nothing on your display where you expect this module to appear, make sure your MagicMirror version is at least 2.2.0.
 
 
 ## Installation
@@ -218,3 +218,34 @@ Most important elements of this module have one or more class names applied. Exa
 ## For Module Developers
 
 This module broadcasts a notification when it recieves a weather update.  The notification is `DARK_SKY_FORECAST_WEATHER_UPDATE` and the payload contains Dark Sky's JSON weather forecast object.  For details on the weather object, see https://darksky.net/dev/docs.
+
+
+## Attributions
+
+**Skycons - Animated icon set by Dark Sky**
+http://darkskyapp.github.io/skycons/
+(using the fork created by Maxime Warner
+that allows individual details of the icons
+to be coloured
+https://github.com/maxdow/skycons)
+
+**Climacons by Adam Whitcroft**
+http://adamwhitcroft.com/climacons/
+
+**Free Weather Icons by Svilen Petrov**
+https://www.behance.net/gallery/12410195/Free-Weather-Icons
+
+**Weather Icons by Thom**
+(Designed for DuckDuckGo)
+https://dribbble.com/shots/1832162-Weather-Icons
+
+Sets 4 and 5 were found on Graphberry, but I couldn't find
+the original artists.
+https://www.graphberry.com/item/weather-icons
+https://www.graphberry.com/item/weathera-weather-forecast-icons
+
+Some of the icons were modified to better work with the module's
+structure and aesthetic.
+
+Weather data provided by Dark Sky
+
