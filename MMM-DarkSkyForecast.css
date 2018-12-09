@@ -30,6 +30,13 @@
   content: " ";
 }
 
+.MMM-DarkSkyForecast .attribution {
+  font-size: 10px;
+  line-height: 16px;
+  color: #333;
+  text-align: right;
+}
+
 /* Current Conditions */
 
 .MMM-DarkSkyForecast .current-conditions-wrapper .current.temperature {

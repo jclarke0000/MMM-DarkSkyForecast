@@ -10,6 +10,8 @@ A weather module that displays current, hourly and daily forecast information
 using data from the Dark Sky API. This is a replacement module for MMM-MyWeather, now that Weather Underground no longer allows free API access.  This a complete rewrite from scratch but maintains
 much of the same functionality.
 
+**NOTE** This module uses the Nunjucks templating system introduced in version 2.2.0 of MagicMirror.  If you're seeing nothing on your display where you expect this module to appear, make sure your MagicMirror version is at least 2.2.0.
+
 
 ## Installation
 

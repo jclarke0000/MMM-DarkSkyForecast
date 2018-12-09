@@ -1,4 +1,52 @@
+/*********************************
+
+  Magic Mirror Module:
+  MMM-DarkSkyForecast
+  https://github.com/jclarke0000/MMM-DarkSkyForecast
+
+  Icons in use by this module:
+  
+  Skycons - Animated icon set by Dark Sky
+  http://darkskyapp.github.io/skycons/
+  (using the fork created by Maxime Warner
+  that allows individual details of the icons
+  to be coloured
+  https://github.com/maxdow/skycons)
+
+  Climacons by Adam Whitcroft
+  http://adamwhitcroft.com/climacons/
+
+  Free Weather Icons by Svilen Petrov
+  https://www.behance.net/gallery/12410195/Free-Weather-Icons
+
+  Weather Icons by Thom
+  (Designed for DuckDuckGo)
+  https://dribbble.com/shots/1832162-Weather-Icons
+
+  Sets 4 and 5 were found on Graphberry, but I couldn't find
+  the original artists.
+  https://www.graphberry.com/item/weather-icons
+  https://www.graphberry.com/item/weathera-weather-forecast-icons
+
+  Some of the icons were modified to better work with the module's
+  structure and aesthetic.
+
+  Weather data provided by Dark Sky
+
+  By Jeff Clarke
+  MIT Licensed
+
+*********************************/
+
 Module.register("MMM-DarkSkyForecast", {
+
+  /*
+    This module uses the Nunjucks templating system introduced in
+    version 2.2.0 of MagicMirror.  If you're seeing nothing on your
+    display where you expect this module to appear, make sure your
+    MagicMirror version is at least 2.2.0.
+  */
+  requiresVersion: "2.2.0",
 
   defaults: {
     apikey: "",
@@ -38,6 +86,9 @@ Module.register("MMM-DarkSkyForecast", {
     label_ordinals: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"],
   },
 
+  validUnits: ["ca","si","uk2","us"],
+  validLayouts: ["tiled", "table"],
+
   getScripts: function() {
     return ["moment.js", this.file("skycons.js")];
   },
@@ -47,9 +98,16 @@ Module.register("MMM-DarkSkyForecast", {
   },
 
   getTemplate: function () {
-    return "mmm-darksky-forecast.njk"
+    return "mmm-darksky-forecast.njk";
   },
 
+  /*
+    Data object provided to the Nunjucks template. The template does not
+    do any data minipulation; the strings provided here are displayed as-is.
+    The only logic in the template are conditional blocks that determine if
+    a certain section should be displayed, and simple loops for the hourly
+    and daily forecast.
+   */
   getTemplateData: function () {
     return {
       phrases: {
@@ -67,11 +125,8 @@ Module.register("MMM-DarkSkyForecast", {
         forecast: this.config.forecastIconSize
       }
 
-    }
+    };
   },
-
-  validUnits: ["ca","si","uk2","us"],
-  validLayouts: ["tiled", "table"],
 
   start: function() {
 
@@ -82,6 +137,13 @@ Module.register("MMM-DarkSkyForecast", {
     this.iconIdCounter = 0;
     this.formattedWeatherData = null;
 
+    /*
+      Optionally, Dark Sky's Skycons animated icon
+      set can be used.  If so, it is drawn to the DOM
+      and animated on demand as opposed to being 
+      contained in animated images such as GIFs or SVGs.
+      This initializes the colours for the icons to use.
+     */
     if (this.config.useAnimatedIcons) {
       this.skycons = new Skycons({
         "monochrome": false,
@@ -99,8 +161,6 @@ Module.register("MMM-DarkSkyForecast", {
       });
     }
 
-
-
     //sanitize optional parameters
     if (this.validUnits.indexOf(this.config.units) == -1) {
       this.config.units = "ca";
@@ -110,7 +170,19 @@ Module.register("MMM-DarkSkyForecast", {
     } 
     if (this.iconsets[this.config.iconset] == null) {
       this.config.iconset = "1c";
-    } 
+    }
+    this.sanitizeNumbers([
+      "updateInterval",
+      "requestDelay",
+      "hourlyForecastInterval",
+      "maxHourliesToShow",
+      "maxDailiesToShow",
+      "mainIconSize",
+      "forecastIconSize",
+      "updateFadeSpeed"
+    ]);
+
+
 
     //force icon set to mono version whern config.coloured = false
     if (this.config.colored == false) {
@@ -176,27 +248,6 @@ Module.register("MMM-DarkSkyForecast", {
 
 
   },
-
-  // resume: function() {
-
-  //   console.log(" --------------- Resume hook -------------------");
-
-  //   //clear animated icon cache
-  //   if (this.config.useAnimatedIcons) {
-  //     this.clearIcons();
-  //   }
-
-  //   this.updateDom();
-
-  //   //start icon playback
-  //   if (this.config.useAnimatedIcons) {
-  //     var self = this;
-  //     setTimeout(function() {
-  //       self.playIcons(self);
-  //     }, this.config.updateFadeSpeed);
-  //   } 
-
-  // },
 
   /*
     This prepares the data to be used by the Nunjucks template.  The template does not do any logic other
@@ -264,6 +315,10 @@ Module.register("MMM-DarkSkyForecast", {
   },  
 
 
+  /*
+    Hourly and Daily forecast items are very similar.  So one routine builds the data
+    objects for both.
+   */
   forecastItemFactory: function(fData, type) {
 
     var fItem = new Object();
@@ -303,6 +358,9 @@ Module.register("MMM-DarkSkyForecast", {
     return fItem;
   },
 
+  /*
+    Returns a formatted data object for High / Low temperature range
+   */
   formatHiLowTemperature: function(h,l) {
     return {
       high: (!this.config.concise ? this.config.label_high + " " : "") + Math.round(h) + "°",
@@ -310,6 +368,9 @@ Module.register("MMM-DarkSkyForecast", {
     };
   },
 
+  /*
+    Returns a formatted data object for precipitation
+   */
   formatPrecipitation: function(percentChance, snowAccumulation, rainIntensityMax, rainIntensity) {
 
     var accumulation = null;
@@ -333,6 +394,9 @@ Module.register("MMM-DarkSkyForecast", {
 
   },
 
+  /*
+    Returns a formatted data object for wind conditions
+   */
   formatWind: function(speed, bearing, gust) {
 
     //wind gust
@@ -347,14 +411,25 @@ Module.register("MMM-DarkSkyForecast", {
     };
   },
 
+  /*
+    Returns the units in use for the data pull from Dark Sky
+   */
   getUnit: function(metric) {
     return this.units[metric][this.weatherData.flags.units];
   },
 
+  /*
+    Formats the wind direction into common ordinals (e.g.: NE, WSW, etc.)
+    Wind direction is provided in degress from North in the data feed.
+   */
   getOrdinal: function(bearing) {
     return this.config.label_ordinals[Math.round(bearing * 16 / 360) % 16];
   },
 
+  /*
+    Some display items need the unti beside them.  This returns the correct
+    unit for the given metric based on the unit set in use.
+   */
   units: {
     accumulationRain: {
       si: "mm",
@@ -376,6 +451,42 @@ Module.register("MMM-DarkSkyForecast", {
     }
   },
 
+  /*
+    Icon sets can be added here.  The path is relative to
+    MagicMirror/modules/MMM-DarkSky/icons, and the format
+    is specified here so that you can use icons in any format
+    that works for you.
+
+    Dark Sky currently specifies one of ten icons for weather
+    conditions:
+
+      clear-day
+      clear-night
+      cloudy
+      fog
+      partly-cloudy-day
+      partly-cloudy-night
+      rain
+      sleet
+      snow
+      wind
+
+    All of the icon sets below support these ten plus an 
+    additional three in anticipation of Dark Sky enabling
+    a few more:
+
+      hail,
+      thunderstorm,
+      tornado
+
+    Lastly, the icons also contain two icons for use as inline
+    indicators beside precipitation and wind conditions. These
+    ones look best if designed to a 24px X 24px artboard.
+
+      i-rain
+      i-wind
+
+   */
   iconsets: {
     "1m": {path:"1m", format:"svg"},
     "1c": {path:"1c", format:"svg"},
@@ -389,12 +500,22 @@ Module.register("MMM-DarkSkyForecast", {
     "5c": {path:"5c", format:"svg"},
   },
 
+  /*
+    This generates a URL to the icon file
+   */
   generateIconSrc: function(icon) {
     return this.file("icons/" + this.iconsets[this.config.iconset].path + "/" +
         icon + "." + this.iconsets[this.config.iconset].format);
 
   },
 
+
+
+  /*
+    When the Skycons animated set is in use, the icons need
+    to be rebuilt with each data refresh.  This routine clears
+    the icon cache before the data refresh is processed.
+   */
   clearIcons: function() {
     this.skycons.pause();
     var self = this;
@@ -405,6 +526,11 @@ Module.register("MMM-DarkSkyForecast", {
     this.iconIdCounter = 0;
   },
 
+  /*
+    When the Skycons animated set is in use, the icons need
+    to be rebuilt with each data refresh.  This routine adds
+    an icon record to the cache.
+   */
   addIcon: function(icon) {
 
     //id to use for the canvas element
@@ -420,18 +546,38 @@ Module.register("MMM-DarkSkyForecast", {
     return iconId;
   },
 
+  /*
+    For use with the Skycons animated icon set. Once the
+    DOM is updated, the icons are built and set to animate.
+    Name is a bit misleading. We needed to wait until
+    the canvas elements got added to the Dom, which doesn't
+    happen until after updateDom() finishes executing
+    before actually drawing the icons.
+  */
   playIcons: function(inst) {
-    /*
-      name is a bit misleading. We needed to wait until
-      the canvas elements got added to the Dom, which doesn't
-      happen until after updateDom() finishes executing.
-    */
     // console.log("playing " + inst.iconCache.length + " icons.");
     inst.iconCache.forEach(function(icon) {
       inst.skycons.add(icon.id, icon.icon);
     });
     inst.skycons.play();
 
+  },
+
+  /*
+    For any config parameters that are expected as integers, this
+    routine ensures they are numbers, and if they cannot be
+    converted to integers, then the module defaults are used.
+   */
+  sanitizeNumbers: function(keys) {
+
+    var self = this;
+    keys.forEach(function(key) {
+      if (isNaN(parseInt(self.config[key]))) {
+        self.config[key] = self.defaults[key];
+      } else {
+        self.config[key] = parseInt(self.config[key]);
+      }
+    });
   }
 
 
