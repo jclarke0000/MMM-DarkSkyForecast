@@ -222,26 +222,26 @@ This module broadcasts a notification when it recieves a weather update.  The no
 
 ## Attributions
 
-**Skycons - Animated icon set by Dark Sky**
-http://darkskyapp.github.io/skycons/
+**Skycons - Animated icon set by Dark Sky**<br />
+http://darkskyapp.github.io/skycons/<br />
 (using the fork created by Maxime Warner
 that allows individual details of the icons
-to be coloured
+to be coloured<br />
 https://github.com/maxdow/skycons)
 
-**Climacons by Adam Whitcroft**
+**Climacons by Adam Whitcroft**<br />
 http://adamwhitcroft.com/climacons/
 
-**Free Weather Icons by Svilen Petrov**
+**Free Weather Icons by Svilen Petrov**<br />
 https://www.behance.net/gallery/12410195/Free-Weather-Icons
 
-**Weather Icons by Thom**
-(Designed for DuckDuckGo)
+**Weather Icons by Thom**<br />
+(Designed for DuckDuckGo)<br />
 https://dribbble.com/shots/1832162-Weather-Icons
 
 Sets 4 and 5 were found on Graphberry, but I couldn't find
-the original artists.
-https://www.graphberry.com/item/weather-icons
+the original artists.<br />
+https://www.graphberry.com/item/weather-icons<br />
 https://www.graphberry.com/item/weathera-weather-forecast-icons
 
 Some of the icons were modified to better work with the module's
