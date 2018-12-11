@@ -71,7 +71,6 @@ Module.register("MMM-DarkSkyForecast", {
     language: config.language,
     iconset: "1c",
     useAnimatedIcons: true,
-    animatedIconPlayDelay: 300,
     animateMainIconOnly: true,
     colored: true,
     forecastLayout: "tiled",
@@ -243,11 +242,12 @@ Module.register("MMM-DarkSkyForecast", {
       //start icon playback
       if (this.config.useAnimatedIcons) {
         var self = this;
-        var testId = this.iconCache[this.iconCache.length - 1].id;
         this.animatedIconDrawTimer = setInterval(function() {
-          if (document.getElementById(testId) != null) {
-            clearInterval(self.animatedIconDrawTimer);
-            self.playIcons(self);
+          for (var i = 0; i < self.iconCache.length; i++) {
+            if (document.getElementById(self.iconCache[i].id) != null) {
+              clearInterval(self.animatedIconDrawTimer);
+              self.playIcons(self);
+            }
           }
         }, 100);
       } 
