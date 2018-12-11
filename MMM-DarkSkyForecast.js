@@ -203,7 +203,7 @@ Module.register("MMM-DarkSkyForecast", {
         self.getData();
       }, self.config.updateInterval * 60 * 1000); //convert to milliseconds
 
-    }, this.config.requestDelay + this.config.animatedIconPlayDelay);
+    }, this.config.requestDelay);
     
 
   },
@@ -244,7 +244,7 @@ Module.register("MMM-DarkSkyForecast", {
         var self = this;
         setTimeout(function() {
           self.playIcons(self);
-        }, this.config.updateFadeSpeed);
+        }, this.config.updateFadeSpeed + this.config.animatedIconPlayDelay);
       } 
 
     }
