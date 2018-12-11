@@ -138,6 +138,7 @@ Module.register("MMM-DarkSkyForecast", {
     this.iconCache = [];
     this.iconIdCounter = 0;
     this.formattedWeatherData = null;
+    this.animatedIconDrawTimer = null;
 
     /*
       Optionally, Dark Sky's Skycons animated icon
@@ -242,9 +243,13 @@ Module.register("MMM-DarkSkyForecast", {
       //start icon playback
       if (this.config.useAnimatedIcons) {
         var self = this;
-        setTimeout(function() {
-          self.playIcons(self);
-        }, this.config.updateFadeSpeed + this.config.animatedIconPlayDelay);
+        var testId = this.iconCache[this.iconCache.length - 1].id;
+        this.animatedIconDrawTimer = setInterval(function() {
+          if (document.getElementById(testId) != null) {
+            clearInterval(self.animatedIconDrawTimer);
+            self.playIcons(self);
+          }
+        }, 100);
       } 
 
     }
@@ -537,7 +542,7 @@ Module.register("MMM-DarkSkyForecast", {
   addIcon: function(icon) {
 
     //id to use for the canvas element
-    var iconId = "skycon_" + this.iconCache.length;
+    var iconId = "skycon_" + this.identifier + "_" + this.iconCache.length;
 
     //add id and icon name to cache
     this.iconCache.push({
