@@ -111,7 +111,7 @@
               <span class="time">{{ h.time }}</span>
               <span class="forecast-icon-container">
               {% if h.animatedIconId %}
-                <canvas class="forecast-icon" id="{{ h.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.forecast }}"></canvas>
+                <canvas class="forecast-icon" id="{{ h.animatedIconId }}" width="{{ animatedIconSizes.forecast }}" height="{{ animatedIconSizes.forecast }}"></canvas>
               {% else %}
                 <img class="forecast-icon" src="{{ h.iconPath }}" />
               {% endif %}
@@ -166,7 +166,7 @@
               <span class="day-name">{{ d.day }}</span>
               <span class="forecast-icon-container">
               {% if d.animatedIconId %}
-                <canvas class="forecast-icon" id="{{ d.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.forecast }}"></canvas>
+                <canvas class="forecast-icon" id="{{ d.animatedIconId }}" width="{{ animatedIconSizes.forecast }}" height="{{ animatedIconSizes.forecast }}"></canvas>
               {% else %}
                 <img class="forecast-icon" src="{{ d.iconPath }}" />
               {% endif %}

@@ -71,12 +71,14 @@ Module.register("MMM-DarkSkyForecast", {
     language: config.language,
     iconset: "1c",
     useAnimatedIcons: true,
+    animatedIconPlayDelay: 300,
     animateMainIconOnly: true,
     colored: true,
     forecastLayout: "tiled",
     showInlineIcons: true,
     mainIconSize: 100,
-    forecastIconSize: 70,
+    forecastTiledIconSize: 70,
+    forecastTableIconSize: 30,
     updateFadeSpeed: 500,
     label_maximum: "max",
     label_high: "H",
@@ -122,7 +124,7 @@ Module.register("MMM-DarkSkyForecast", {
       },
       animatedIconSizes : {
         main: this.config.mainIconSize,
-        forecast: this.config.forecastIconSize
+        forecast: this.config.forecastLayout == "tiled" ? this.config.forecastTiledIconSize : this.config.forecastTableIconSize
       }
 
     };
@@ -179,7 +181,8 @@ Module.register("MMM-DarkSkyForecast", {
       "maxDailiesToShow",
       "mainIconSize",
       "forecastIconSize",
-      "updateFadeSpeed"
+      "updateFadeSpeed",
+      "animatedIconPlayDelay"
     ]);
 
 
@@ -200,7 +203,7 @@ Module.register("MMM-DarkSkyForecast", {
         self.getData();
       }, self.config.updateInterval * 60 * 1000); //convert to milliseconds
 
-    }, this.config.requestDelay);
+    }, this.config.requestDelay + this.config.animatedIconPlayDelay);
     
 
   },
