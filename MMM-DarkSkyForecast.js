@@ -239,7 +239,13 @@ Module.register("MMM-DarkSkyForecast", {
       //broadcast weather update
       this.sendNotification("DARK_SKY_FORECAST_WEATHER_UPDATE", payload);
 
-      //start icon playback
+      /*
+        Start icon playback. We need to wait until the canvas elements
+        have been drawn to the DOM before drawing and starting the icons.
+        Depending on module configs, some may or may not actually get drawn
+        to the DOM.  So we periodically loop through the icon cache until
+        we find one present.
+      */
       if (this.config.useAnimatedIcons) {
         var self = this;
         this.animatedIconDrawTimer = setInterval(function() {
