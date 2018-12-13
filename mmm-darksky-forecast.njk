@@ -11,7 +11,7 @@
       <div class="current-conditions-wrapper">
         <span class="current-conditions-wrapper">
           {% if forecast.currently.animatedIconId %}
-            <canvas class="current icon current" id="{{ forecast.currently.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.main }}"></canvas>
+            <canvas class="skycon-{{ identifier }} current icon current" id="{{ forecast.currently.animatedIconId }}" data-animated-icon-name="{{ forecast.currently.animatedIconName }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.main }}"></canvas>
           {% else %}
             <img class="current icon current" src="{{ forecast.currently.iconPath }}" />
           {% endif %}
@@ -111,7 +111,7 @@
               <span class="time">{{ h.time }}</span>
               <span class="forecast-icon-container">
               {% if h.animatedIconId %}
-                <canvas class="forecast-icon" id="{{ h.animatedIconId }}" width="{{ animatedIconSizes.forecast }}" height="{{ animatedIconSizes.forecast }}"></canvas>
+                <canvas class="skycon-{{ identifier }} forecast-icon" data-animated-icon-name="{{ h.animatedIconName }}" id="{{ h.animatedIconId }}" width="{{ animatedIconSizes.forecast }}" height="{{ animatedIconSizes.forecast }}"></canvas>
               {% else %}
                 <img class="forecast-icon" src="{{ h.iconPath }}" />
               {% endif %}
@@ -166,7 +166,7 @@
               <span class="day-name">{{ d.day }}</span>
               <span class="forecast-icon-container">
               {% if d.animatedIconId %}
-                <canvas class="forecast-icon" id="{{ d.animatedIconId }}" width="{{ animatedIconSizes.forecast }}" height="{{ animatedIconSizes.forecast }}"></canvas>
+                <canvas class="skycon-{{ identifier }} forecast-icon" data-animated-icon-name="{{ d.animatedIconName }}" id="{{ d.animatedIconId }}" width="{{ animatedIconSizes.forecast }}" height="{{ animatedIconSizes.forecast }}"></canvas>
               {% else %}
                 <img class="forecast-icon" src="{{ d.iconPath }}" />
               {% endif %}
@@ -218,7 +218,8 @@
       </div>
     {% endif %}      
 
+    <div class="meta-timestamp" id="{{ moduleTimestampIdPrefix + identifier }}" data-timestamp="{{ timeStamp }}"></div>
+    <div class="attribution small dimmed">Powered by Dark Sky</div>
   {% endif %}
 
-  <div class="attribution small dimmed">Powered by Dark Sky</div>
 </div>

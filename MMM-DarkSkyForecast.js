@@ -85,6 +85,7 @@ Module.register("MMM-DarkSkyForecast", {
     label_timeFormat: "h a",
     label_days: ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"],
     label_ordinals: ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"],
+    moduleTimestampIdPrefix: "DARK_SKY_TIMESTAMP_"
   },
 
   validUnits: ["ca","si","uk2","us"],
@@ -124,7 +125,10 @@ Module.register("MMM-DarkSkyForecast", {
       animatedIconSizes : {
         main: this.config.mainIconSize,
         forecast: this.config.forecastLayout == "tiled" ? this.config.forecastTiledIconSize : this.config.forecastTableIconSize
-      }
+      },
+      moduleTimestampIdPrefix: this.config.moduleTimestampIdPrefix,
+      identifier: this.identifier,
+      timeStamp: this.dataRefreshTimeStamp
 
     };
   },
@@ -134,7 +138,6 @@ Module.register("MMM-DarkSkyForecast", {
     Log.info("Starting module: " + this.name);
 
     this.weatherData = null;
-    this.iconCache = [];
     this.iconIdCounter = 0;
     this.formattedWeatherData = null;
     this.animatedIconDrawTimer = null;
@@ -231,6 +234,7 @@ Module.register("MMM-DarkSkyForecast", {
       }
 
       //process weather data
+      this.dataRefreshTimeStamp = moment().format("x");
       this.weatherData = payload;
       this.formattedWeatherData = this.processWeatherData();
 
@@ -240,20 +244,20 @@ Module.register("MMM-DarkSkyForecast", {
       this.sendNotification("DARK_SKY_FORECAST_WEATHER_UPDATE", payload);
 
       /*
-        Start icon playback. We need to wait until the canvas elements
-        have been drawn to the DOM before drawing and starting the icons.
-        Depending on module configs, some may or may not actually get drawn
-        to the DOM.  So we periodically loop through the icon cache until
-        we find one present.
+        Start icon playback. We need to wait until the DOM update
+        is complete before drawing and starting the icons.
+
+        The DOM object has a timestamp embedded that we will look
+        for.  If the timestamp can be found then the DOM has been
+        fully updated.
       */
       if (this.config.useAnimatedIcons) {
         var self = this;
         this.animatedIconDrawTimer = setInterval(function() {
-          for (var i = 0; i < self.iconCache.length; i++) {
-            if (document.getElementById(self.iconCache[i].id) != null) {
-              clearInterval(self.animatedIconDrawTimer);
-              self.playIcons(self);
-            }
+          var elToTest = document.getElementById(self.config.moduleTimestampIdPrefix + self.identifier);
+          if (elToTest != null && elToTest.getAttribute("data-timestamp") == self.dataRefreshTimeStamp) {
+            clearInterval(self.animatedIconDrawTimer);
+            self.playIcons(self);
           }
         }, 100);
       } 
@@ -315,7 +319,8 @@ Module.register("MMM-DarkSkyForecast", {
     return {
       "currently" : {
         temperature: Math.round(this.weatherData.currently.temperature) + "°",
-        animatedIconId: this.config.useAnimatedIcons ? this.addIcon(this.weatherData.currently.icon) : null,
+        animatedIconId: this.config.useAnimatedIcons ? this.getAnimatedIconId() : null,
+        animatedIconName: this.weatherData.currently.icon,
         iconPath: this.generateIconSrc(this.weatherData.currently.icon),
         tempRange: this.formatHiLowTemperature(this.weatherData.daily.data[0].temperatureMax,this.weatherData.daily.data[0].temperatureMin),
         precipitation: this.formatPrecipitation(this.weatherData.currently.precipProbability, this.weatherData.currently.precipAccumulation, this.weatherData.currently.precipIntensityMax, this.weatherData.currently.precipIntensity),
@@ -351,7 +356,8 @@ Module.register("MMM-DarkSkyForecast", {
 
     // --------- Icon ---------
     if (this.config.useAnimatedIcons && !this.config.animateMainIconOnly) {
-      fItem.animatedIconId = this.addIcon(fData.icon, this.config.forecastIconSize);
+      fItem.animatedIconId = this.getAnimatedIconId();
+      fItem.animatedIconName = fData.icon;
     }
     fItem.iconPath = this.generateIconSrc(fData.icon);
 
@@ -527,36 +533,30 @@ Module.register("MMM-DarkSkyForecast", {
 
   /*
     When the Skycons animated set is in use, the icons need
-    to be rebuilt with each data refresh.  This routine clears
-    the icon cache before the data refresh is processed.
+    to be rebuilt with each data refresh.  This traverses the
+    DOM to find all of the current animated icon canvas elements
+    and removes them by id from the skycons object.
    */
   clearIcons: function() {
     this.skycons.pause();
     var self = this;
-    this.iconCache.forEach(function(icon) {
+    var animatedIconCanvases = document.querySelectorAll(".skycon-" + this.identifier);
+    animatedIconCanvases.forEach(function(icon) {
       self.skycons.remove(icon.id);
     });
-    this.iconCache = [];
     this.iconIdCounter = 0;
   },
 
   /*
     When the Skycons animated set is in use, the icons need
-    to be rebuilt with each data refresh.  This routine adds
-    an icon record to the cache.
+    to be rebuilt with each data refresh.  This returns a
+    unique id that will be assigned the icon's canvas element.
    */
-  addIcon: function(icon) {
+  getAnimatedIconId: function() {
 
     //id to use for the canvas element
-    var iconId = "skycon_" + this.identifier + "_" + this.iconCache.length;
-
-    //add id and icon name to cache
-    this.iconCache.push({
-      "id" : iconId,
-      "icon" : icon
-    });
-
-    // console.log(this.iconCache.length + " icons");
+    var iconId = "skycon_" + this.identifier + "_" + this.iconIdCounter;
+    this.iconIdCounter++;
     return iconId;
   },
 
@@ -564,14 +564,18 @@ Module.register("MMM-DarkSkyForecast", {
     For use with the Skycons animated icon set. Once the
     DOM is updated, the icons are built and set to animate.
     Name is a bit misleading. We needed to wait until
-    the canvas elements got added to the Dom, which doesn't
+    the canvas elements got added to the DOM, which doesn't
     happen until after updateDom() finishes executing
     before actually drawing the icons.
+
+    This routine traverses the DOM for all canavas elements
+    prepared for an animated icon, and adds the icon to the
+    skycons object.  Then the icons are played.
   */
   playIcons: function(inst) {
-    // console.log("playing " + inst.iconCache.length + " icons.");
-    inst.iconCache.forEach(function(icon) {
-      inst.skycons.add(icon.id, icon.icon);
+    var animatedIconCanvases = document.querySelectorAll(".skycon-" + inst.identifier);
+    animatedIconCanvases.forEach(function(icon) {
+      inst.skycons.add(icon.id, icon.getAttribute("data-animated-icon-name"));
     });
     inst.skycons.play();
 
