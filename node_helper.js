@@ -49,7 +49,7 @@ module.exports = NodeHelper.create({
           // "&exclude=minutely"
 
         // console.log("[MMM-DarkSkyForecast] Getting data: " + url);
-        request({url: url, methid: "GET"}, function( error, response, body) {
+        request({url: url, method: "GET"}, function( error, response, body) {
 
           if(!error && response.statusCode == 200) {
 
