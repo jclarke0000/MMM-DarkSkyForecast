@@ -41,15 +41,15 @@ module.exports = NodeHelper.create({
       } else {
 
         //make request to Dark Sky API
-        var url = "https://api.darksky.net/forecast/" +
+        var url = "https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/" +
+        //var url = "https://api.darksky.net/forecast/" +
           payload.apikey + "/" +
           payload.latitude + "," + payload.longitude +
           "?units=" + payload.units +
           "&lang=" + payload.language;
           // "&exclude=minutely"
 
-        // console.log("[MMM-DarkSkyForecast] Getting data: " + url);
-        request({url: url, method: "GET"}, function( error, response, body) {
+        request({url: url, method: "GET", headers:{'Origin':'http://manghani.com'}}, function( error, response, body) {
 
           if(!error && response.statusCode == 200) {
 
