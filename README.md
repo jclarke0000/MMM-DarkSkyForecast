@@ -140,6 +140,18 @@ Find out your latitude and longitude here:
       <td>Whether to prefix wind and precipitation information with an icon.  Only affects the <code>tiled</code> layout.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
     <tr>
+      <td><code>mainIconSize</code></td>
+      <td>The current condition icon, overwriting the default CSS value. Use this instead of CSS to change the size of animated icons, as otherwise they will be pixalated.<br><br><strong>Type</strong> <code>Number</code><br>Defaults to <code>100</code></td>
+    </tr>
+    <tr>
+      <td><code>forecastTiledIconSize</code></td>
+      <td>The size of the forecast icons in the tiled layout. Use this instead of CSS to change the size of animated icons, as otherwise they will be pixalated. Only affects the <code>tiled</code> layout.<br><br><strong>Type</strong> <code>Number</code><br>Defaults to <code>70</code></td>
+    </tr>
+    <tr>
+      <td><code>forecastTableIconSize</code></td>
+      <td>The size of the forecast icons in the table layout. Use this instead of CSS to change the size of animated icons, as otherwise they will be pixalated. Only affects the <code>table</code> layout.<br><br><strong>Type</strong> <code>Number</code><br>Defaults to <code>30</code></td>
+    </tr>
+    <tr>
       <td><code>forecastLayout</code></td>
       <td>Can be set to <code>tiled</code> or <code>table</code>. How to display hourly and forecast information.  See below for screenshot examples of each.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>tiled</code></td>
     </tr>
