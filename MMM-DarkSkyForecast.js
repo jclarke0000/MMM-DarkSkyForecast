@@ -266,6 +266,26 @@ Module.register("MMM-DarkSkyForecast", {
 
 
   },
+ 
+/* 
+Receive notifications from other modules to update the latitude and longitude.  Update the module when complete.
+*/
+ 
+ notificationReceived: function(notification, payload, sender) {
+    if (notification == "update-weather-location") {
+      
+      Log.log(this.name + " received a module notification: " + notification + " from sender: " + sender.name + ": lat: " + payload['lat'] + ", lon: " + payload['lon']);
+
+      this.config.latitude = payload['lat'];
+      this.config.longitude = payload['lon'];
+
+      this.getData();
+
+      this.updateDom();
+
+    } 
+  },
+
 
   /*
     This prepares the data to be used by the Nunjucks template.  The template does not do any logic other
