@@ -7,7 +7,7 @@ https://github.com/MichMich/MagicMirror
 ![Screenshot](/../screenshots/MMM-DarkSkyForecast.png?raw=true "Screenshot")
 
 A weather module that displays current, hourly and daily forecast information
-using data from the Dark Sky API. This is a replacement module for MMM-MyWeather, now that Weather Underground no longer allows free API access.  This a complete rewrite from scratch but maintains
+using data from the OpenWeather One Call API. This is a replacement module for MMM-MyWeather, now that Weather Underground no longer allows free API access.  This a complete rewrite from scratch but maintains
 much of the same functionality.
 
 **NOTE:** This module uses the Nunjucks templating system introduced in version 2.2.0 of MagicMirror.  If you're seeing nothing on your display where you expect this module to appear, make sure your MagicMirror version is at least 2.2.0.
@@ -29,8 +29,8 @@ At a minimum you need to supply the following required configuration parameters:
 * `latitude`
 * `longitude`
 
-You can request an API key to access Dark Sky data here:
-`https://darksky.net/dev`.
+You can request an API key to access data here:
+`https://openweathermap.org/api/one-call-api`.
 
 Free tier is fine -- this module will not make any where near 1000 request on one day.
 
@@ -61,7 +61,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>language</code></td>
-      <td>The language to be used for display.<br><br><strong>Type</strong> <code>String</code><br>Defaults to the language set for Magic Mirror, but can be overridden with any of the language codes listed here: https://darksky.net/dev/docs#request-parameters.</td>
+      <td>The language to be used for display.<br><br><strong>Type</strong> <code>String</code><br>Defaults to the language set for Magic Mirror, but can be overridden with any of the language codes listed here: https://openweathermap.org/api/one-call-api#multi.</td>
     </tr>
     <tr>
       <td><code>colored</code></td>
@@ -69,7 +69,7 @@ Find out your latitude and longitude here:
     </tr>
     <tr>
       <td><code>units</code></td>
-      <td>One of the following: <code>si</code>, <code>ca</code>, <code>uk2</code>, or <code>us</code>.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>ca</code><br />See https://darksky.net/dev/docs#request-parameters for details on units.</td>
+      <td>One of the following: <code>imperial</code>, <code>metric</code>, or <code>[blank]</code>.<br><br><strong>Type</strong> <code>String</code><br>Defaults to units set for Magic Mirror.<br />See https://openweathermap.org/api/one-call-api#data for details on units.</td>
     </tr>
     <tr>
       <td><code>showCurrentConditions</code></td>
@@ -247,6 +247,6 @@ https://www.graphberry.com/item/weathera-weather-forecast-icons
 Some of the icons were modified to better work with the module's
 structure and aesthetic.
 
-**Weather data provided by Dark Sky**<br />
-https://darksky.net/
+**Weather data provided by OpenWeather**<br />
+https://openweathermap.org
 

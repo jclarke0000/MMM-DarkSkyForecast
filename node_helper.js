@@ -2,20 +2,20 @@
 
   Node Helper for MMM-DarkSkyForecast.
 
-  This helper is responsible for the data pull from Dark Sky.
+  This helper is responsible for the DarkSky-compatible data pull from OpenWeather.
   At a minimum the API key, Latitude and Longitude parameters
   must be provided.  If any of these are missing, the request
-  to Dark Sky will not be executed, and instead an error
+  to OpenWeather will not be executed, and instead an error
   will be output the the MagicMirror log.
 
   Additional, this module supplies two optional parameters:
 
-    units - one of "ca", "uk2", "us", or "si"
-    lang - Any of the languages Dark Sky supports, as listed here: https://darksky.net/dev/docs#response-format
+    units - one of "metric", "imperial", or "" (blank)
+    lang - Any of the languages OpenWeather supports, as listed here: https://openweathermap.org/api/one-call-api#multi
 
-  The Dark Sky API request looks like this:
+  The DarkSky-compatible API request looks like this:
 
-    https://api.darksky.net/forecast/API_KEY/LATITUDE,LONGITUDE?units=XXX&lang=YY
+    https://api.openweathermap.org/data/2.5/onecall?lat=LATITUDE&lon=LONGITUDE&units=XXX&lang=YY&appid=API_KEY
 
 *********************************/
 
@@ -30,21 +30,22 @@ module.exports = NodeHelper.create({
   },
 
   socketNotificationReceived: function(notification, payload){
-    if (notification === "DARK_SKY_FORECAST_GET") {
+    if (notification === "OPENWEATHER_ONE_CALL_FORECAST_GET") {
 
       var self = this;
 
       if (payload.apikey == null || payload.apikey == "") {
-        console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** No API key configured. Get an API key at https://darksky.net" );
+        console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** No API key configured. Get an API key at https://openweathermap.org/api/one-call-api" );
       } else if (payload.latitude == null || payload.latitude == "" || payload.longitude == null || payload.longitude == "") {
         console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** Latitude and/or longitude not provided." );
       } else {
 
-        //make request to Dark Sky API
-        var url = "https://api.darksky.net/forecast/" +
-          payload.apikey + "/" +
-          payload.latitude + "," + payload.longitude +
-          "?units=" + payload.units +
+        //make request to OpenWeather onecall API
+        var url = "https://api.openweathermap.org/data/2.5/onecall" +
+          "?appid=" + payload.apikey +
+          "&lat=" + payload.latitude +
+          "&lon=" + payload.longitude +
+          (payload.units !== "" ? "&units=" + payload.units : "") +
           "&lang=" + payload.language;
           // "&exclude=minutely"
 
@@ -56,7 +57,7 @@ module.exports = NodeHelper.create({
             //Good response
             var resp = JSON.parse(body);
             resp.instanceId = payload.instanceId;
-            self.sendSocketNotification("DARK_SKY_FORECAST_DATA", resp);
+            self.sendSocketNotification("OPENWEATHER_ONE_CALL_FORECAST_DATA", resp);
 
           } else {
             console.log( "[MMM-DarkSkyForecast] " + moment().format("D-MMM-YY HH:mm") + " ** ERROR ** " + error );
