@@ -41,7 +41,7 @@ module.exports = NodeHelper.create({
       } else {
 
         //make request to Dark Sky API
-        var url = "https://api.darksky.net/forecast/" +
+        var url = "https://api.pirateweather.net/forecast/" +
           payload.apikey + "/" +
           payload.latitude + "," + payload.longitude +
           "?units=" + payload.units +
